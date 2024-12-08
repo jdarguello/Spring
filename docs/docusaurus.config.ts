@@ -5,9 +5,9 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
-  favicon: 'img/favicon.ico',
+  title: 'Spring Boot Training',
+  tagline: 'A website for learning Spring Boot',
+  favicon: 'img/spring.png',
 
   // Set the production url of your site here
   url: 'https://jdarguello.github.io/',
@@ -72,7 +72,7 @@ const config: Config = {
       title: 'Spring Boot',
       logo: {
         alt: 'My Site Logo',
-        src: 'img/logo.svg',
+        src: 'img/spring.png',
       },
       items: [
         {
@@ -81,11 +81,11 @@ const config: Config = {
           position: 'left',
           label: '1. Introducción',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
-          label: 'GitHub',
-          position: 'right',
+          type: 'docSidebar',
+          sidebarId: 'dataSidebar',
+          position: 'left',
+          label: '2. Spring Data',
         },
       ],
     },
