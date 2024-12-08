@@ -70,6 +70,16 @@ Con la información expuesta en la Tabla 6, ya podemos conocer la información b
 
 ### 1.3. Relaciones _One-To-Many_ y _Many-To-One_
 
-En este tipo de relaciones, se establece que un objeto en una tabla se relaciona con múltiples en otra. Por ejemplo, muc
+En este tipo de relaciones, se especifica que un objeto de una tabla se relaciona con uno o varios de otra. Por ejemplo, para abrir una cuenta bancaria, se necesita que la persona presente documentación oficial que lo certifique como ciudadano nacional o extranjero, además de saber si es mayor o menor de edad. Tanto la edad como la nacionalidad son factores que pueden cambiar en el tiempo y es importante que las personas actualicen su documentación oficial en caso de cambiar para evitar malentendidos legales.
 
-Ejemplo de transacciones bancarias con las cuentas.
+| __DocumentoID__ | __Número_documento__ | __Nombre_completo__ | __Fecha_expedicion__ | __Nacionalidad__ | __PersonaID__ |
+| --------------- | -------------------- | ------------------- | -------------------- | ---------------- | ------------- |
+| 1               | 5172949              | Fernando Pérez      | 20 de noviembre 2000 | Colombiano       | 1             |
+| 2               | 9212028318           | Laura Jimena Gómez  | 05 de diciembre 1994 | Colombiana       | 3             |
+| 2               | 2039485933           | Fernanda Pinzón     | 05 de diciembre 1994 | Mexicana         | 2             |
+| 4               | 1098364732           | Laura Jimena Gómez  | 10 de diciembre 2010 | Colombiana       | 3             |
+| 5               | 1098384236           | John Pérez          | 20 de noviembre 2020 | Colombiano       | 1             |
+
+Tabla 7. Documentos oficiales de identificación de las personas de la Tabla 1.
+
+Como se aprecia en la Tabla 7, existen ocasiones donde las personas requieren cambiar su documentación oficial y relacionarlas con la identificación de su cuenta, ya sea porque alcanzan la mayoría de edad, porque extraviaron su documentación oficial o porque se cambian de nombre, entre otras posibilidades.
