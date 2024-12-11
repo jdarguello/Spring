@@ -90,7 +90,7 @@ public class UserService {
 }
 ```
 
-* __`@Controller`__ y __`@RestController`__: se emplean para la 
+* __`@Controller`__ y __`@RestController`__: se emplean para la exposición de API's, mediante métodos HTTP (GET, POST, PUT, PATCH y DELETE).
 
 ### 2.1. Inyección de dependencias
 
