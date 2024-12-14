@@ -8,18 +8,62 @@ Para entender adecuadamente la aplicabilidad de los conceptos básicos de Spring
 
 Spring Data, como tal, se trata de una dependencia de Spring Framework que se encarga de las operaciones de persistencia de datos y, además, abstrae la lógica a través de interfaces que simplifican las operaciones CRUD dentro de un microservicio. Existen diferentes dependencias basadas en Spring Data, dependiendo del caso de uso y del tipo de motor de bases de datos.
 
-* __Spring Data JPA:__ se utiliza como capa base para la comunicación con bases de datos relacionales (SQL).
-* __Spring Data R2DBC:__ basado en Spring Data JPA. Se emplea en aplicaciones reactivas que utilizan bases de datos relacionales.
-* __Spring Data JDBC:__ persistencia de datos SQL con JDBC plano.
-* __Spring Data Reactive Redis:__ acceso a valores en Redis de tipo _key-value_.
+* Spring Data JPA: se utiliza como capa base para la comunicación con bases de datos relacionales (SQL).
+* Spring Data R2DBC: basado en Spring Data JPA. Se emplea en aplicaciones reactivas que utilizan bases de datos relacionales.
+* Spring Data JDBC: persistencia de datos SQL con JDBC plano.
+* Spring Data Reactive Redis: acceso a valores en Redis de tipo _key-value_.
 
-Como en nuestro caso nos centraremos en persistencia con bases de datos SQL, utilizaremos _Spring Data JPA_. A continuación, se exponen los conceptos clave detrás de esta herramienta.
+En nuestro caso, nos centraremos en persistencia con bases de datos SQL a través de _Spring Data JPA_. A continuación, se exponen los conceptos clave detrás de esta herramienta. 
 
-## 1. Configuración: conexión a la base de datos
+## 1. Crear la Base de Datos
+
+El primer paso a seguir es crear la base de datos en donde almacenaremos la información de nuestro microservicio. Existen diferentes opciones, dependiendo de la etapa de desarrollo de nuestra aplicación.
+
+1. __Desarrollo local -  Ambiente Testing__: cuando estamos iniciando esta etapa, requerimos probar constantemente la funcionalidad de nuestro microservicio. Esto se puede hacer a través de _pruebas funcionales_ y _test unitarios_. Lo más recomendable para agilizar el proceso es emplear una base de datos en memoria. La base de datos de tipo __H2__ es ideal para ello. No requiere la instalación de ningún paquete o software, corre en memoria y la conexión es muy sencilla.
+2. __Desarrollo local - Ambiente Integración__: cuando alcanzamos una etapa robusta en nuestro desarrollo y deseamos probar los flujos completos que emulen las interacciones en ambiente de desarrollo con una base de datos en un _Cloud provider_ (AWS, Azure, etc), debemos generar la base de datos en local y conectar el microservicio con ella. Para este caso, lo recomendable es usar __Docker__, o Postman, para la creación de un contenedor con la base de datos que requerimos.
+3. __Ambientes cloud__: una vez superamos satisfactoriamente la etapa de _desarrollo local_, estamos listos para irnos a la nube. Lo primero que debemos hacer allí es acomodar los recursos de infraestructura (al principio puede ser manual, luego se recomienda usar IaC), habilitar los pipelines CI/CD para automatizar el proceso y establecer los secretos y variables para que nuestra aplicación se conecte con la base de datos cloud. Este punto lo veremos más adelante, en nuestro curso de Kubernetes.
 
 
+## 2. Configuración: conexión a la base de datos
 
-## 2. Modelo
+Teniendo nuestra base de datos lista, lo siguiente que debemos hacer es establecer la conexión con ella a través de los archivos de configuración de Spring Boot. En Spring Boot, podemos establecer las configuraciones con archivos de tipo `application.properties` o en formato YAML con `application.yaml`. Por ejemplo, para una base de datos en PostgreSQL, podría ser algo como:
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bankdb
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8080
+```
+
+Como se observa, la configuración en YAML es intuitiva. El significado de cada propiedad se puede apreciar a continuación.
+
+| __Propiedad__ | __Descripción__ |
+| ------------- | --------------- |
+| __spring.datasource__ | Serie de propiedades que definen la conexión con la base de datos. |
+| spring.datasource.url | URL de conexión. |
+| spring.datasource.username | Nombre de usuario para establecer la conexión. |
+| spring.datasource.password | Contraseña del usuario para conexión a la base de datos. |
+| __spring.jpa__ | Propiedades base de Spring Data JPA para la serialización de código SQL. |
+| spring.jpa.hibernate.ddl-auto | Define cómo Hibernate debe manejar la actualización de esquemas. Puede tomar los siguientes valores: update, create, validate. |
+| spring.jpa.show-sql | Imrpime las consultas SQL generadas en consola (es bueno para operaciones de _debugging_). |
+| hibernate.dialect | Dialecto de PostgreSQL que permite a Hibernate generar código SQL compatible con la base de datos. |
+| __server.port__ | (opcional) Puerto en el que corre la aplicación (puerto 8080 está por default). |
+
+Tabla 1. Explicación de propiedades de configuración.
+
+
+## 3. Modelos
 
 Spring Data relaciona los modelos base (POJOs) con las tablas SQL. Cada atributo de la clase corresponde a una columna de la tabla en la base de datos. Por ejemplo:
 
@@ -30,12 +74,23 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Product {
+@Table(name="Persona")
+public class Persona {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
-    private Double price;
+
+    @Column(name="nombre", length=50, nullable=false, unique=false) //(opcional)
+    private String nombre;
+
+    //Los atributos que no se especifican decoradores, se cren tipo `@column` con argumentos genéricos
+    private String email;
+
+    @Transcient
+    private Integer edad;
+
+    @Temporal(TemporalType.DATE)
+    private Date fechaNacimiento;
 
     // Getters, Setters, Constructors (Lombok can be used)
 }
@@ -44,9 +99,48 @@ public class Product {
 Como se puede apreciar, existen múltiples decoradores que se relacionan en la clase, entre ellos:
 
 * __`@Entity`__: identifica una clase como una tabla en SQL. Por default, toma el nombre de la clase para relacionarlo con una tabla. Si la tabla con dicho nombre no existe, creará la tabla en la base de datos.
-* __`@Id`__: 
-* __`@GeneratedValue`__:
+* __`@Table`__: (opcional) por default, adopta el nombre de la clase para identificar la tabla en la base de datos. Este decorador debe especificarse en los casos donde la tabla tenga otra nombre diferente al de la clase.
+* __`@Id`__: define el atributo de la clase que contiene el identificador de la tabla como `PRIMARY KEY`.
+* __`@GeneratedValue`__: en caso de que se generen nuevos registros en base de datos, se debe especificar la forma en como se espera que se genere el `id`. Existen diferenes tipos (ver Tabla 2).
+* __`@Column`__: (opcional) permite especificar las características para almacenar el atributo en base de datos.
+* __`@Transcient`__: permite establecer atributos temporales __no persistentes__. Es decir, los valores de estos atributos no se guardarán en la base de datos.
+* __`@Temporal`__: facilita el almacenamiento y obtención de fechas.
 
-## 3. Repository
+Existen múltiples estrategias para la generación del ID de nuevos registros en la base de datos y se encuentran resumidos en la Tabla 2.
 
-El concepto de _repository_ se trata de una abstracción para el __acceso de datos__. En lugar de escribir un DAO (_Data Access Object_), Spring Data lo crea para nosotros
+| __Strategy__ | __¿Cómo funciona?__ | __Motores soportados__ | __¿Cuándo usar?__ |
+| ------------ | ------------------- | ---------------------------- | ----------------- |
+| __AUTO__     | JPA selecciona la estrategia más adecuada | Todos | Cuando se requiere conexión a múltiples bases de datos. | 
+| __IDENTITY__ | Función de Auto-incremento | MySQL y MariaDB | Cuando se busca aplicar auto-incremento. |
+| __SEQUENCE__ | Objeto de base de datos que incrementa el valor del `id`. Este se genera __antes__ de insertar el nuevo registro en la tabla. | PostgreSQL, Oracle y H2 | Cuando se disponen de generadores de secuencia (_sequence generators_). |
+| __TABLE__    | Relaciona una tabla con los valores de `id`. | Todos | Se usa rara vez. Puede provocar problemas de rendimiento. |
+
+Tabla 2. Estrategias de `@GeneratedValue`.
+
+### 3.1. Relaciones entre _clases_ y _tablas_
+
+En la capa de __Modelos__, además de especificar la forma en cómo se almacena y retribuye la información, también establecemos la forma en cómo se relacionan los objetos entre sí. Lo que significa que debemos especificar las relaciones en términos de `@OneToOne`, `@OneToMany`, `@ManyToOne` y `@ManyToMany`. Recuerda que la explicación de estos conceptos los encuentras en la [sección anterior](./intro).
+
+A continuación, podrás encontrar casos específicos de uso de cada una de estas relaciones. Sólo debes hacer click en la relación que te interese.
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+    <TabItem value="one" label="One-To-One" default>
+        asas
+    </TabItem>
+    <TabItem value="one-two" label="One-To-Many" default>
+        asas
+    </TabItem>
+    <TabItem value="two-one" label="Many-To-One" default>
+        asas
+    </TabItem>
+    <TabItem value="many" label="Many-To-Many" default>
+        asas
+    </TabItem>
+</Tabs>
+
+## 4. Repositories
+
+El concepto de _repository_ se trata de una abstracción para el __acceso a los datos__. En lugar de escribir un DAO (_Data Access Object_), Spring Data lo crea por nosotros
