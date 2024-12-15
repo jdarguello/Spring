@@ -83,7 +83,7 @@ public class Persona {
     @Column(name="nombre", length=50, nullable=false, unique=false) //(opcional)
     private String nombre;
 
-    //Los atributos que no se especifican decoradores, se cren tipo `@column` con argumentos genéricos
+    //Los atributos a los que no se especifican decoradores se crean como tipo `@Column` con argumentos genéricos
     private String sexo;
 
     @Transcient
@@ -139,8 +139,64 @@ import ManyMany from '/docs/data/relaciones/many_many.md';
     </TabItem>
 </Tabs>
 
+En la Tabla 10 se explican los argumentos definidos en las relaciones entre tablas.
 
+| __Argumento__ | __Aplicable a__ | __Tipo de dato__ | __Default value__ | __Uso__ |
+| ------------- | --------------- | ---------------- | ----------------- | ------- |
+| __mappedBy__  | `@OneToOne`, `@OneToMany` y `@ManyToMany` | String           | No requeido       | Empleado en __lado inverso__ de la relación, especificando el atributo al que se referencia. | 
+| __cascade__   | `@OneToOne`, `@OneToMany` y `@ManyToMany` | CascadeType | None | Se emplea para especificar la _operación de cascada_. __Ver la Tabla 11 para más detalles. | 
+| __orphanRemoval__ | `@OneToMany` y `@OneToOne` | Boolean | false | Cuando se establece como `true`, los argumentos de la relación que sean eliminados, se eliminan de forma automática de la base de datos. |
+| __fetch__     | `@OneToOne`, `@OneToMany` y `@ManyToMany` | FetchType | LAZY | Define la estrategia de __carga de información__. Hay dos posibles valores: __LAZY__, que carga la información a demanda, y __EAGER__, que carga toda la información inmediatamente. |
+
+Tabla 10. Argumentos usados en las relaciones entre tablas.
+
+La operación de tipo __`cascade`__ es crucial para las operaciones de persistencia de datos definidas en las relaciones entre tablas. Debido a ello, los tipos de `cascade` se encuentran definidos en la Tabla 11.
+
+| **Cascade Type** | **Descripción**                                           | **¿Cuándo usarlo?**                                              |
+|------------------|----------------------------------------------------------|-----------------------------------------------------------------|
+| **PERSIST**      | Cuando persiste el padre, el hijo también se persiste automáticamente. | Cuando se requiere crear el padre y el hijo juntos.                 |
+| **MERGE**        | Cuando se actualiza el padre, los cambios en el hijo se fusionan en la base de datos. | Cuando se desea actualizar un padre y también al hijo.|
+| **REMOVE**       | Cuando se elimina el padre, el hijo también se elimina.      | Cuando se necesita eliminar un padre también debe se elimina a los hijos.     |
+| **REFRESH**      | Cuando actualizas el padre, las entidades hijas se actualizan desde la base de datos. | Cuando deseas asegurarte de que las entidades padre-hijo reflejen el estado actual de la base de datos. |
+| **DETACH**       | Cuando separas el padre, las entidades hijas también se separan del contexto de persistencia. | Cuando deseas eliminar al padre y al hijo del contexto JPA para evitar el seguimiento. |
+| **ALL**          | Combina PERSIST, REMOVE, MERGE, REFRESH, DETACH.           | Úsalo cuando quieras que se apliquen todas las operaciones de cascada. |
+
+Tabla 11. Operaciones de cascada.
 
 ## 4. Repositories
 
-El concepto de _repository_ se trata de una abstracción para el __acceso a los datos__. En lugar de escribir un DAO (_Data Access Object_), Spring Data lo crea por nosotros
+El concepto de _repository_ se trata de una abstracción para el __acceso a los datos__. En lugar de programar un DAO (_Data Access Object_) o redactar código SQL, Spring Data lo hace por nosotros. Existen dos tipos principales de interfaces a tener en cuenta:
+
+| __Tipo__ | __Parent Interface__ | __Objetivo__ |
+| -------- | -------------------- | ------------ |
+| CrudRepository | `CrudRepository<TipoModelo, TipoID>` | Permite realizar las operaciones CRUD (Crear, Leer, Actualizar y Eliminar). |
+| JpaRepository | `JpaRepository<TipoModelo, TipoID>` | Además de las operaciones CRUD, añade funcionalidades de paginación y clasificación. |
+
+Tabla 12. Tipos de _repositories_.
+
+De la Tabla 12, `TipoModelo` hace referencia al tipo de modelo que se desea comunicar con la base de datos (definido en el capítulo anterior); y `TipoID` se refiere al tipo de dato del ID del modelo (normalmente es un número, puede `Long` o `Integer`).
+
+Los _Repositories_ complementan los modelos definidos para ser implementados en la capa de los servicios, donde se implementa la lógica de negocio. A continuación, se expone un ejemplo de una interfaz para la clase `Persona` que definimos en la sección anterior.
+
+```java
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PersonaRepository extends JpaRepository<Persona, Long> {
+}
+```
+
+Los _repositories_ vienen por defaul con los métodos descritos en la Tabla 13.
+
+| **Method**           | **Descripción**                                 |
+|---------------------|--------------------------------------------------|
+| **save(T entity)**   | Guarda o actualiza una entidad                   |
+| **findById(ID id)**  | Encuentra una entidad por su clave primaria       |
+| **findAll()**        | Retorna todas las entidades                       |
+| **findAll(Pageable p)** | Retorna todas las entidades con paginación    |
+| **deleteById(ID id)**| Elimina una entidad por su ID                    |
+| **delete(T entity)** | Elimina una entidad específica                   |
+| **count()**          | Cuenta el número total de registros               |
+| **existsById(ID id)**| Verifica si existe una entidad con este ID       |
+
+Tabla 13. Métodos por default de un _repository_.
+
