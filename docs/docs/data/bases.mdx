@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Conceptos básicos
 
-Para entender adecuadamente la aplicabilidad de los conceptos básicos de Spring Data, es importante comprender primero las [relaciones entre tablas](./intro) descritas en la sección anterior. 
+Para entender adecuadamente la aplicabilidad de los conceptos básicos de Spring Data, es importante comprender primero las [relaciones entre tablas](/docs/intro) descritas en la sección anterior. 
 
 Spring Data, como tal, se trata de una dependencia de Spring Framework que se encarga de las operaciones de persistencia de datos y, además, abstrae la lógica a través de interfaces que simplifican las operaciones CRUD dentro de un microservicio. Existen diferentes dependencias basadas en Spring Data, dependiendo del caso de uso y del tipo de motor de bases de datos.
 
@@ -117,15 +117,15 @@ Tabla 9. Estrategias de `@GeneratedValue`.
 
 ### 3.1. Relaciones entre _clases_ y _tablas_
 
-En la capa de __Modelos__, además de especificar la forma en cómo se almacena y retribuye la información, también establecemos la forma en cómo se relacionan los objetos entre sí. Lo que significa que debemos especificar las relaciones en términos de `@OneToOne`, `@OneToMany`, `@ManyToOne` y `@ManyToMany`. Recuerda que la explicación de estos conceptos los encuentras en la [sección anterior](./intro). Adicional, se reutilizaron los ejemplos dados en la sección _introductoria_.
+En la capa de __Modelos__, además de especificar la forma en cómo se almacena y retribuye la información, también establecemos la forma en cómo se relacionan los objetos entre sí. Lo que significa que debemos especificar las relaciones en términos de `@OneToOne`, `@OneToMany`, `@ManyToOne` y `@ManyToMany`. Recuerda que la explicación de estos conceptos los encuentras en la [sección anterior](/docs/intro). Adicional, se reutilizaron los ejemplos dados en la sección _introductoria_.
 
 A continuación, podrás encontrar casos específicos de uso de cada una de estas relaciones. Sólo debes hacer click en la relación que te interese.
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import One from './relaciones/one_one.md';
-import OneMany from './relaciones/one_many.md';
-import ManyMany from './relaciones/many_many.md';
+import One from '/docs/data/relaciones/one_one.md';
+import OneMany from '/docs/data/relaciones/one_many.md';
+import ManyMany from '/docs/data/relaciones/many_many.md';
 
 <Tabs>
     <TabItem value="one" label="One-To-One" default>
