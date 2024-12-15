@@ -54,7 +54,7 @@ src/
         ecommerce/
           ProductoApiApplication.java   <-- Ejecución del proyecto
           controllers/
-            ProductController.java      <-- @RestController
+            ProductController.java      <- @RestController
           services/
             ProductService.java         <-- @Service (lógica de negocio)
           models/
