@@ -60,7 +60,7 @@ Como se observa, la configuración en YAML es intuitiva. El significado de cada 
 | hibernate.dialect | Dialecto de PostgreSQL que permite a Hibernate generar código SQL compatible con la base de datos. |
 | __server.port__ | (opcional) Puerto en el que corre la aplicación (puerto 8080 está por default). |
 
-Tabla 1. Explicación de propiedades de configuración.
+Tabla 8. Explicación de propiedades de configuración.
 
 
 ## 3. Modelos
@@ -78,21 +78,19 @@ import jakarta.persistence.Id;
 public class Persona {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long personaId;
 
     @Column(name="nombre", length=50, nullable=false, unique=false) //(opcional)
     private String nombre;
 
     //Los atributos que no se especifican decoradores, se cren tipo `@column` con argumentos genéricos
-    private String email;
+    private String sexo;
 
     @Transcient
     private Integer edad;
 
     @Temporal(TemporalType.DATE)
     private Date fechaNacimiento;
-
-    // Getters, Setters, Constructors (Lombok can be used)
 }
 ```
 
@@ -115,31 +113,33 @@ Existen múltiples estrategias para la generación del ID de nuevos registros en
 | __SEQUENCE__ | Objeto de base de datos que incrementa el valor del `id`. Este se genera __antes__ de insertar el nuevo registro en la tabla. | PostgreSQL, Oracle y H2 | Cuando se disponen de generadores de secuencia (_sequence generators_). |
 | __TABLE__    | Relaciona una tabla con los valores de `id`. | Todos | Se usa rara vez. Puede provocar problemas de rendimiento. |
 
-Tabla 2. Estrategias de `@GeneratedValue`.
+Tabla 9. Estrategias de `@GeneratedValue`.
 
 ### 3.1. Relaciones entre _clases_ y _tablas_
 
-En la capa de __Modelos__, además de especificar la forma en cómo se almacena y retribuye la información, también establecemos la forma en cómo se relacionan los objetos entre sí. Lo que significa que debemos especificar las relaciones en términos de `@OneToOne`, `@OneToMany`, `@ManyToOne` y `@ManyToMany`. Recuerda que la explicación de estos conceptos los encuentras en la [sección anterior](./intro).
+En la capa de __Modelos__, además de especificar la forma en cómo se almacena y retribuye la información, también establecemos la forma en cómo se relacionan los objetos entre sí. Lo que significa que debemos especificar las relaciones en términos de `@OneToOne`, `@OneToMany`, `@ManyToOne` y `@ManyToMany`. Recuerda que la explicación de estos conceptos los encuentras en la [sección anterior](./intro). Adicional, se reutilizaron los ejemplos dados en la sección _introductoria_.
 
 A continuación, podrás encontrar casos específicos de uso de cada una de estas relaciones. Sólo debes hacer click en la relación que te interese.
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import One from './relaciones/one_one.md';
+import OneMany from './relaciones/one_many.md';
+import ManyMany from './relaciones/many_many.md';
 
 <Tabs>
     <TabItem value="one" label="One-To-One" default>
-        asas
+        <One />
     </TabItem>
-    <TabItem value="one-two" label="One-To-Many" default>
-        asas
-    </TabItem>
-    <TabItem value="two-one" label="Many-To-One" default>
-        asas
+    <TabItem value="one-two" label="One-To-Many & Many-To-One" default>
+        <OneMany />
     </TabItem>
     <TabItem value="many" label="Many-To-Many" default>
-        asas
+        <ManyMany />
     </TabItem>
 </Tabs>
+
+
 
 ## 4. Repositories
 

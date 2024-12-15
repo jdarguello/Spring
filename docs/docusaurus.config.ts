@@ -38,6 +38,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
+          exclude: ['**/relaciones/**'],
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
@@ -86,6 +87,18 @@ const config: Config = {
           sidebarId: 'dataSidebar',
           position: 'left',
           label: '2. Spring Data',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'testSidebar',
+          position: 'left',
+          label: '3. Testing',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'secSidebar',
+          position: 'left',
+          label: '4. Spring Security',
         },
       ],
     },
