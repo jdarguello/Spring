@@ -26,7 +26,7 @@ src/
           controllers/
             ProductoController.java      <- @RestController
           repositories/
-            ProductoRepository.jaba     <- interface repository
+            ProductoRepository.java     <- interface repository
           services/
             ProductoService.java         <-- @Service (lógica de negocio)
           models/

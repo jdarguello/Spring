@@ -144,7 +144,7 @@ En la Tabla 10 se explican los argumentos definidos en las relaciones entre tabl
 | __Argumento__ | __Aplicable a__ | __Tipo de dato__ | __Default value__ | __Uso__ |
 | ------------- | --------------- | ---------------- | ----------------- | ------- |
 | __mappedBy__  | `@OneToOne`, `@OneToMany` y `@ManyToMany` | String           | No requeido       | Empleado en __lado inverso__ de la relación, especificando el atributo al que se referencia. | 
-| __cascade__   | `@OneToOne`, `@OneToMany` y `@ManyToMany` | CascadeType | None | Se emplea para especificar la _operación de cascada_. __Ver la Tabla 11 para más detalles. | 
+| __cascade__   | `@OneToOne`, `@OneToMany` y `@ManyToMany` | CascadeType | None | Se emplea para especificar la _operación de cascada_. __Ver la Tabla 11 para más detalles__. | 
 | __orphanRemoval__ | `@OneToMany` y `@OneToOne` | Boolean | false | Cuando se establece como `true`, los argumentos de la relación que sean eliminados, se eliminan de forma automática de la base de datos. |
 | __fetch__     | `@OneToOne`, `@OneToMany` y `@ManyToMany` | FetchType | LAZY | Define la estrategia de __carga de información__. Hay dos posibles valores: __LAZY__, que carga la información a demanda, y __EAGER__, que carga toda la información inmediatamente. |
 
