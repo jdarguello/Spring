@@ -144,5 +144,6 @@ public class OrdenCompra {
 
 Se plantean interfaces tipo `CrudRepository` para cada uno de los modelos gestionados, similar a como se trabajó en el [Taller 2](./taller2.md). 
 
-## 4. Services
+## 4. Services y controladores
 
+Se gestionan de una forma similar a la expuesta en el [Taller 2](./taller2.md). 
