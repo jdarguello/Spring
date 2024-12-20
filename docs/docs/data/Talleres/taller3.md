@@ -16,7 +16,7 @@ En la Figura 1, se pueden observar tres clases: `Producto`, `CarritoCompras`y `O
 
 Figura 2. Relaciones entre tablas.
 
-Como se aprecia en la Figura 2, en el presente taller, usaremos dos tipos de relaciones entre tablas: __One-To-One__ (`CarritoCompras` y `OrdenCompra`) y __Many-To-Many__ (`Producto` y `CarritoCompras`).
+Como se aprecia en la Figura 2, en el presente taller, usaremos dos tipos de relaciones entre tablas: __One-To-One__ (`CarritoCompras` y `OrdenCompra`) y __One-To-Many__ (`Producto` y `CarritoCompras`).
 
 ## 1. Generación del proyecto y Conexión a la base de datos
 
