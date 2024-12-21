@@ -32,5 +32,4 @@ public class Articulo {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "productoId")
     private Producto producto;
-    //private 
 }
