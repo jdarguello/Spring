@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Introducción
 
-La _calidad_ del código fuente trata de uno de los aspectos más relevantes dentro del ciclo de vida del desarrollo de software. Se trata de la etapa que garantiza la mantenibilidad de los requerimientos funcionales del código fuente en el tiempo. Con ello, se asegura que cuando se produzcan modificaciones o adiciones nuevas en el código, estas no vayan a _"romper"_ lo que ya antes funcionaba. En conjunto con las nuevas arquitecturas de software, __esta es la diferencia principal entre un _software legado_ y un _software moderno___. 
+La _calidad_ del código trata de uno de los aspectos más relevantes dentro del ciclo de vida del desarrollo de software. Se trata de la etapa que garantiza la mantenibilidad de los requerimientos funcionales del código fuente en el tiempo. Con ello, se asegura que, cuando se produzcan modificaciones o adiciones nuevas en el código, estas no vayan a _"romper"_ lo que ya antes funcionaba. En conjunto con las nuevas arquitecturas de software, __esto concibe la diferencia principal entre un _software legado_ y un _software moderno___. 
 
 ![](../../static/img/testing/piramide.png)
 
@@ -38,14 +38,14 @@ Figura 2. Beneficios de implementar tests de integración. Fuente: https://litsl
 
 Como se comentó anteriormente, la cobertura del código fuente, alcanzada mediante pruebas unitarias, no es en sí mismo un factor concluyente de que el código fuente sea _"de alta calidad"_. Además de la automatización que proveen los LLMs para incrementar los niveles de cobertura, existen diferentes formas prácticas que incrementan esta métrica sin ejecutar las comparaciones necesarias que garanticen las funcionalidades base. 
 
-EL Mutation Testing se trata de pruebas que corroboran la integridad en la estructura de los test unitarios. Altos niveles de cobertura en conjunto con altos estándares en Mutation Testing garantizan la integridad en las pruebas unitarias elaboradas y, en consecuencia, una alta calidad en el código fuente.
+El Mutation Testing se trata de pruebas que corroboran la integridad en la estructura de los test unitarios. Altos niveles de cobertura en conjunto con altos estándares en Mutation Testing garantizan la integridad en las pruebas unitarias elaboradas y, en consecuencia, una alta calidad en el código fuente.
 
-El Mutation Testing consiste en hacer cambios controlados sobre el código fuente, de forma automática, verificando que los test uniarios establecidos fallen de forma intencionada; garantizando así la integridad de los test unitarios y de integración. 
+El Mutation Testing consiste en hacer cambios controlados sobre el código fuente, de forma automática, verificando que los test establecidos fallen de forma intencionada; garantizando así la integridad de los test unitarios y de integración. 
 
 
 ## 4. Frameworks
 
-Los frameworks de testing utilizados en el presente trabajo se enumeran a continuación.
+Los frameworks de testing se enumeran a continuación.
 
 | Framework | Versión | Descripción |
 | --------- | ------- | ----------- |
