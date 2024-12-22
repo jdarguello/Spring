@@ -82,9 +82,94 @@ Como podemos ver, los test unitarios permiten que nuestro desarrollo se antepong
 
 ## 1. Estructura base
 
-La estructura base de un _test unitario_ es la siguiente:
+La estructura base de un _test unitario_ consiste en lo siguiente:
 
-JUnit fue el primer framework de desarrollo de pruebas unitarias en cualquier lenguaje de programación, lo que lo hace uno de las librerías más robustas para la elaboración de test unitarios. 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+    <TabItem value="img" label="Estructura general" default>
+    ![](../../static/img/testing/unit.jpeg)
+    Figura 1. Estructura general de un test unitario.
+    </TabItem>
+    <TabItem value="code" label="Estructura Java" default>
+
+```java
+public class EstructuraTest {
+
+    // Atributos de configuración
+    private static String atributoConfig;
+
+    // Atributos compartidos por test
+    private String atributoTest;
+
+    @BeforeAll
+    public static void setupClass() {
+        // Se emplea para ejecutar lógica de configuración general. Por ejemplo: establecer conexión a una base de datos en memoria (tipo H2)
+        System.out.println("Esto se ejecuta UNA SOLA VEZ");
+    }
+
+    @BeforeEach
+    public void beforeEach() {
+        // Se ejecuta antes de cada método de test. Por ejemplo: para reiniciar el contenido de una base de datos.
+        System.out.println("Se ejecuta ANTES de cada test");
+    }
+
+    @Test
+    public void testUnitario() {
+        System.out.println("Ejecución del test");
+        assertNotNull(sharedResource);              //LÓGICA QUE DEBE CUMPLIR EL TEST
+    }
+
+    @AfterEach
+    public void afterEach() {
+        // Executed after each test method
+        System.out.println("Se ejecuta DESPUÉS de cada test");
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        // Executed once after all test methods in the class
+        System.out.println("After all tests");
+        sharedResource = null; // Clean up shared resource
+    }
+}
+
+```
+
+</TabItem>
+</Tabs>
+
+Como se aprecia en la Figura 1, y en la estructura Java, los test unitarios están compuestos por diferentes secciones, resumidos en la Tabla 1.
+
+| __Sección__ | __Descripción__ | __Ejemplo de uso__ | 
+| ----------- | --------------- | ------------------ |
+| `@BeforeAll` | Ejecuta lógica al inicio del set de testing. Se ejecuta __una sola vez__. | Establecer conexión a una base de datos en memoria (tipo H2) para emular operaciones de persistencia de datos. |
+| `@BeforeEach` | Los test unitarios se ejecutan de forma aleatoria. Deben ser repetibles e aislados. Esta sección permite reiniciar configuraciones y variables generales, y se ejecuta antes de cada test unitario. | Escribir registros en tablas de bases de datos en memoria, que sean empleados en _todos_ los test unitarios. |
+| `@Test` | Realiza comparaciones (`assert`) que garantizan el correcto funcionamiento de los requerimientos funcionales. | Cuando se desea verificar la funcionalidad base o en escenarios de fallo controlados. Permite dar manejo a bugs y requerimientos funcionales. |
+| `@AfterEach` | Permite reiniciar configuraciones generales. Se ejecuta después de cada test unitario. | Reinicio de los registros en las tablas de una base de datos en pruebas de persistencia. |
+| `@AfterAll` | Ejecuta lógica general al finalizar el set de testing, __una sola vez__. | Eliminar la base de datos de pruebas para reiniciar las configuraciones generales en otros set de testing. |
+
+Tabla 1. Secciones de un test unitario.
+
+### 1.1. Tipos de `assert`
+
+El éxito de un test unitario depende del tipo de comparaciones que se realizan. Algunas de las comparaciones principales se pueden apreciar en el ejemplo de una operación de suma (`assertEquals` y `assertThrows`). Existen diferentes tipos de comparaciones, algunos de los más populares se pueden apreciar en la Tabla 2.
+
+| __Tipo__ | __Descripción__ | __Ejemplo__ |
+| -------- | --------------- | ----------- |
+| `assertEquals` | Realiza una comparación exacta entre dos objetos. Si son iguales, pasará el test. De lo contratio, lo rechazará. | `assertEquals(2,1+1)` |
+| `assertTrue` | Verifica que el valor booleno sea `true`. De serlo, pasará el test. | `assertTrue(2 > 1)` |
+| `assertFalse` | Comprueba que el valor booleno sea `false`. De serlo, pasará el test. | `assertFalse (2 < 1)` |
+| `assertNotNull` | Asegura que el valor no sea de tipo `null`. No se recomienda usarlo como comparativo definitivo de un requerimiento funcional. Debería usarse para verificaciones secundarias. | `assertNotNull("Hola, no soy un 'null'")` |
+| `assertThrows` | Verifica que, durante la ejecución de un test, falle de acuerdo a una clase de excepción y con un mensaje de error esperado. | NA |
+
+Tabla 2. Tipos de `assert` más recurrentes.
+
 
 ## 2. Mocks
+
+Existen ocasiones en que la lógica de un método depende de las interacciones con las clases subyacentes a través de relaciones de _asociación_, _agregación_ o _composición_, entre otros. Como se especificó anteriormente, un test unitario debe ser aislado y repetibe, pero también debe ser __independiente__. Es decir, no debe depender de las interacciones con otros objetos. Con base en ello, nace el concepto de un _Mock_.
+
+Un Mock se trata de un objeto tipo _"cascarón"_ que carece de todo tipo de lógica. Los resultados de los métodos del mock son definidos específicamente dentro del test unitario, permitiendo controlar su comportamiento al ser inyectado dentro del objeto de estudio. 
 
