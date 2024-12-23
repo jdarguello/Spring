@@ -169,7 +169,24 @@ Tabla 2. Tipos de `assert` más recurrentes.
 
 ## 2. Mocks
 
-Existen ocasiones en que la lógica de un método depende de las interacciones con las clases subyacentes a través de relaciones de _asociación_, _agregación_ o _composición_, entre otros. Como se especificó anteriormente, un test unitario debe ser aislado y repetibe, pero también debe ser __independiente__. Es decir, no debe depender de las interacciones con otros objetos. Con base en ello, nace el concepto de un _Mock_.
+Existen ocasiones en que la lógica de un método depende de las interacciones con las clases subyacentes a través de relaciones de _asociación_, _agregación_ o _composición_. Como se especificó anteriormente, un test unitario debe ser aislado y repetibe, pero también debe ser __independiente__. Es decir, no debe depender de las interacciones con otros objetos. Con base en ello, nace el concepto de un _Mock_.
 
-Un Mock se trata de un objeto tipo _"cascarón"_ que carece de todo tipo de lógica. Los resultados de los métodos del mock son definidos específicamente dentro del test unitario, permitiendo controlar su comportamiento al ser inyectado dentro del objeto de estudio. 
+Un Mock se trata de un objeto tipo _"cascarón"_ que carece de todo tipo de lógica. Los resultados de los métodos del mock son definidos específicamente dentro del test unitario, permitiendo controlar su comportamiento al ser inyectado dentro del objeto de estudio. Un ejemplo de uso se puede apreciar a continuación.
 
+```java
+import static org.mockito.Mockito.*;
+
+public class ExampleMockTest {
+    @Test
+    public void testWithMock() {
+        // Crear el Mock
+        MyDependency dependency = mock(MyDependency.class);
+
+        // Usarlo en el test unitario
+        when(dependency.getData()).thenReturn("Mocked Data");
+
+        // Comparar el comportamiento
+        assertEquals("Mocked Data", dependency.getData());
+    }
+}
+```
