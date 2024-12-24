@@ -190,3 +190,148 @@ public class ExampleMockTest {
     }
 }
 ```
+
+## 3. Spring Testing
+
+Dentro de Spring Framework, existen beans que facilitan la construcción de test de unitarios dentro de un microservicio. Estos beans son preinstalados al momento de iniciar un proyecto de Spring Boot y se conocen como _Spring Testing_. A continuación, se pueden apreciar algunos de los beans más significativos que sirven tanto para test unitarios como de integración.
+
+| __Bean__ | __Tipo__ | __Descripción__ |
+| -------- | -------- |--------------- |
+| `@SpringBootTest` | Configuración | Carga la configuración base en el set de testing. Se emplea a nivel de clase. |
+| `@ContextConfiguration` | Configuración | Permite especificar el tipo de configuración de testing. Por ejemplo, si se usan distintas bases de datos, se puede especificar a cuál conectarse. |
+| `@Import` | Configuración | Importa configuraciones adicionales. Especialmente útil para test de integración con configuraciones de seguridad. |
+| `@MockBean` | Mocking | Crea e inyecta un mock manejado por Spring Boot. Se puede usar en relaciones complejas entre clases. |
+| `@SpyBean` | Mocking | Envuelve un bean existente y simula parte de su comportamiento. |
+| `@WebMvcTest` | Capa | Se utiliza en tests de integración. Permite la exposición de APIs en la capa de infraestructura haciendo llamados mediante métodos HTTP (GET, POST, etc). Se puede configurar para que utilice todos los controladores o una sola clase en particular. |
+| `@DataJpaTest` | Capa | Configura, únicamente, los componented de Spring Data JPA para corroborar la lógica de serialización en la capa de persistencia de datos. |
+
+Tabla 3. Beans de Spring Testing.
+
+### 3.1. Modelos y Repositorios
+
+Para los casos en que se utiliza Spring Data JPA, es necesario realizar pruebas unitarias en las capas de _modelos_ y _repositorios_ para garantizar la correcta configuración de las __relaciones entre clases__ y __relaciones entre tablas__.
+
+```java
+@DataJpaTest
+public class UserRepositoryTest {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Test
+    public void testSaveAndFindById() {
+        // Arrange
+        User user = new User();
+        user.setName("John Doe");
+        user.setEmail("john.doe@example.com");
+
+        // Act
+        User savedUser = userRepository.save(user);
+        Optional<User> foundUser = userRepository.findById(savedUser.getId());
+
+        // Assert
+        assertTrue(foundUser.isPresent());
+        assertEquals("John Doe", foundUser.get().getName());
+        assertEquals("john.doe@example.com", foundUser.get().getEmail());
+    }
+
+    @Test
+    public void testDelete() {
+        // Arrange
+        User user = new User();
+        user.setName("Mark Smith");
+        user.setEmail("mark.smith@example.com");
+        User savedUser = userRepository.save(user);
+
+        // Act
+        userRepository.delete(savedUser);
+        Optional<User> foundUser = userRepository.findById(savedUser.getId());
+
+        // Assert
+        assertFalse(foundUser.isPresent());
+    }
+}
+```
+
+### 3.2. Servicios
+
+La capa de servicios contiene la lógica de negocio. Emplea las entidades especificadas en la capa de _modelos_ (sección 3.1), por lo que suelen emplearse mocks (sección 2.) para garantizar que el test unitario sea aislado y repetible.
+
+```java
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+public class UserServiceTest {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private UserService userService;
+
+    public UserServiceTest() {
+        MockitoAnnotations.openMocks(this); // Inicializa los mocks y los inyecta en el servicio
+    }
+
+    @Test
+    public void testGetUserById_UserExists() {
+        // Arrange
+        when(userRepository.findById("123")).thenReturn(Optional.of("John Doe"));
+
+        // Act
+        String user = userService.getUserById("123");
+
+        // Assert
+        assertEquals("John Doe", user);
+        verify(userRepository).findById("123");
+    }
+
+    @Test
+    public void testGetUserById_UserNotFound() {
+        // Arrange
+        when(userRepository.findById("456")).thenReturn(Optional.empty());
+
+        // Act & Assert
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> userService.getUserById("456"));
+        assertEquals("User not found", exception.getMessage());
+        verify(userRepository).findById("456");
+    }
+}
+
+```
+
+### 3.3. Controladores
+
+En este tipo de test, se busca corroborar la funcionalidad base de las APIs expuestas en un microservicio en la capa de infraestructura, emulando las respuestas de la capa de servicios a través de _mocks_ (ver capítulo 2.).
+
+```java
+@WebMvcTest(UserController.class)
+public class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private UserService userService;
+
+    @Test
+    public void testGetUserById() throws Exception {
+        // Mock the service behavior
+        when(userService.getUserById("123")).thenReturn("User with ID: 123");
+
+        // Perform the request and validate the response
+        mockMvc.perform(get("/users")
+                .param("id", "123"))
+               .andExpect(status().isOk())
+               .andExpect(content().string("User with ID: 123"));
+
+        // Verify the interaction with the service
+        verify(userService).getUserById("123");
+    }
+}
+```
