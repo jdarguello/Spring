@@ -302,7 +302,6 @@ public class UserServiceTest {
         verify(userRepository).findById("456");
     }
 }
-
 ```
 
 ### 3.3. Controladores
