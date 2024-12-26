@@ -1,0 +1,76 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="25.0.3">
+  <diagram name="Página-1" id="JFG_nryDpg6CDqc8TxxQ">
+    <mxGraphModel dx="977" dy="651" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="BciXGnmGfQawnQU4-UZK-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="BciXGnmGfQawnQU4-UZK-5" target="BciXGnmGfQawnQU4-UZK-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-5" value="Sucursal bancaria" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontSize=12;fontStyle=0;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="149" y="270" width="151" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="BciXGnmGfQawnQU4-UZK-1" target="BciXGnmGfQawnQU4-UZK-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-1" value="Cliente" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="70" y="320" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-3" value="" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;fillColor=#505050;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.devices.cell_phone_iphone_proportional;" vertex="1" parent="1">
+          <mxGeometry x="216" y="380" width="17" height="29" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-4" value="" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;fillColor=#505050;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.devices.laptop;" vertex="1" parent="1">
+          <mxGeometry x="195.5" y="320" width="58" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-7" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="340" y="530" as="sourcePoint" />
+            <mxPoint x="340" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-8" value="Frontend" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="195.5" y="170" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-9" value="Backend" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="555.5" y="170" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-10" value="Micro&lt;div&gt;Auth&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="230" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-12" value="Micro&lt;div&gt;Saldos&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="690" y="290" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="BciXGnmGfQawnQU4-UZK-14" target="BciXGnmGfQawnQU4-UZK-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="BciXGnmGfQawnQU4-UZK-14" target="BciXGnmGfQawnQU4-UZK-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-14" value="API&lt;div&gt;Gateway&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="320" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-21" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="525.5" y="290" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-18" value="Micro&lt;div&gt;CDTs&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;verticalAlign=top;" vertex="1" parent="BciXGnmGfQawnQU4-UZK-21">
+          <mxGeometry width="120" height="119.99999999999999" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-20" value="&lt;span style=&quot;background-color: rgb(255, 244, 195);&quot;&gt;DB CDTs&lt;/span&gt;" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/databases/Azure_Database_PostgreSQL_Server.svg;" vertex="1" parent="BciXGnmGfQawnQU4-UZK-21">
+          <mxGeometry x="43.5" y="49.090909090909086" width="33" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-23" value="&lt;span style=&quot;background-color: rgb(218, 232, 252);&quot;&gt;DB Saldos&lt;/span&gt;" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/databases/Azure_Database_PostgreSQL_Server.svg;" vertex="1" parent="1">
+          <mxGeometry x="733.5" y="340.0009090909091" width="33" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" edge="1" parent="1" source="BciXGnmGfQawnQU4-UZK-18" target="BciXGnmGfQawnQU4-UZK-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-29" value="Registro en&lt;div&gt;Superfinanciera&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="525.5" y="440" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="BciXGnmGfQawnQU4-UZK-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="BciXGnmGfQawnQU4-UZK-18" target="BciXGnmGfQawnQU4-UZK-29">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

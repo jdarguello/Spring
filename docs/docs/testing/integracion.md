@@ -88,7 +88,7 @@ Por otro lado, la dependencia de `Testcontainers` se trata de una librería base
 ### 2.1. ¿Cuándo usar uno u otro?
 
 
-Depende del caso de uso. Para pruebas de flujo interno, lo más probable es que se requieran desarrollar pruebas aisladas y controladas con bases de datos, por lo que el uso de `Testcontainers` podría ser suficiente. En otros casos, se podría requerir el uso de pruebas con otros microservicios para comprobar la funcionalidad de flujos completos; en cuyo caso sería recomendable utilizar esta herramienta en conjunto con `Docker Compose`. 
+Depende del caso de uso. Para pruebas de flujo interno, lo más probable es que se requieran desarrollar pruebas aisladas y controladas con bases de datos, por lo que el uso de `Testcontainers` podría ser suficiente. En otros casos, se podría requerir el uso de pruebas con otros microservicios para comprobar la funcionalidad de flujos completos; en cuyo caso podría ser recomendable utilizar esta herramienta en conjunto con `Docker Compose`. 
 
 En la Tabla 1 se encuentran algunas consideraciones que podrían ayudar a seleccionar una u otra. __Recuerda que pueden existir casos donde sea viable usar ambas__.
 
@@ -103,7 +103,63 @@ En la Tabla 1 se encuentran algunas consideraciones que podrían ayudar a selecc
 
 ## 3. Pruebas de flujo interno
 
+En este tipo de pruebas, se busca evaluar los flujos completos de __un solo microservicio__. Busca evaluar la lógica de las integraciones en las capas de _modelos_, _servicios_ y _controladores_. Para ello, implementamos `@SpringBootTest` y los beans de `Testcontainers` para la persistencia de datos. Este tipo de pruebas se ejecutan en la capa de __controladores__, por ejemplo:
 
+```java
+@Testcontainers
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Transactional
+class ControllerIntegrationTest {
+
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
+
+    @Autowired
+    TestRestTemplate restTemplate;
+
+    @Test
+    void connectionEstablished() {
+        assertThat(postgres.isCreated()).isTrue();
+        assertThat(postgres.isRunning()).isTrue();
+    }
+
+    @Test
+    void shouldFindAllPosts() {
+        Post[] posts = restTemplate.getForObject("/api/posts", Post[].class);
+        assertThat(posts.length).isGreaterThan(100);
+    }
+}
+```
+
+Algunos de los beans utilizados se describen a continuación.
+
+* __`@Testcontainers`__: indica que el set de testing utilizará Testcontainers. Maneja el ciclo de vida de los contenedores definidos de forma automática.
+* __`@SpringBootTest`__: Inicializa el contexto de la aplicación emulando la aplicación de Spring Boot.
+  * `WebEnvironment.RANDOM_PORT`: inicializa el contexto de la aplicación en un puerto aleatorio. Es útil para testear toda la aplicación.
+* __`@Transactional`__: asegura que cada test corra en un contexto transaccional, haciendo _rollbacks_ automáticos en cualquier cambio de la base de datos.
+* __`@Container`__: marca el `PostgreSQLContainer` como un contenedor manejado por Testcontainer.
+* __`@ServiceConnection`__: configuración que conecta la aplicación con la base de datos PostgreSQL de forma automática.
 
 ## 4. Integración con otros microservicios
+
+La estrategia de testing para evaluar la integración con otros microservicios depende de la robustez de la estrategia organizacional. Si estamos trabajando con un grupo de microservicios contenerizados y versionados, entonces podemos implementar _Docker Compose_ y `Testcontainers` en nuestros test de integración. Si, por el contrario, estamos construyendo un microservicio que se integrará con monolitos legados, microservicios no contenerizados o servicios externos a nuestro ecosistema, lo recomendable sería trabajarlo con `WireMock` para simular la lógica de integración.
+
+### 4.1. Integración con microservicios de la misma organización
+
+Para los casos en donde los microservicios a integrar son de la misma organización y están contenerizados, es viable implementar Testcontainers con Docker Compose. Por ejemplo, suponiendo que el flujo que sigue la solicitud de un cliente para sacar un CDT fuese el expuesto en la Figura 1.
+
+![](../../static/img/testing/integration/Integracion_Interna.png)
+
+Figura 1. Flujo para generación de CDTs.
+
+Como se aprecia en la Figura 1, un cliente que desea sacar un CDT impacta diferentes microservicios para lograr su objetivo. Sin embargo, no es necesario emular el comportamiento de todos los microservicios, sólo los que interactúan con el que deseamos diseñar (para nuestro ejemplo, es el de color amarillo: __Micro de CDTs__). Las pruebas que impactan a todo el flujo, se conocen como pruebas E2E (_End-To-End_). El microservicio de CDTs se comunica con dos servicios: el de saldos (interno) y el que realiza el registro a la Superintendencia Financiera como ente regulador (externo). En esta sección, analizaremos la primera integración.
+
+
+
+
+### 4.2. Integraciones con software externo
+
+Para los casos en donde no se dispone de microservicios contenerizados o que requieren integración con servicios externos al ecosistema organizacional que no cuentan con ambientes _sandbox_ de pruebas, la mejor estrategia de testing para estos casos involucra el uso de `WireMock`. 
+
 
