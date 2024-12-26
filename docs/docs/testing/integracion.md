@@ -72,7 +72,7 @@ import TabItem from '@theme/TabItem';
     services:
         postgres:
             container_name: blog_postgres_db
-            image: 'postgres:16.0'
+            image: 'postgres:latest'
             environment:
             - 'POSTGRES_DB=blog'
             - 'POSTGRES_PASSWORD=secret_password'
@@ -153,13 +153,78 @@ Para los casos en donde los microservicios a integrar son de la misma organizaci
 
 Figura 1. Flujo para generación de CDTs.
 
-Como se aprecia en la Figura 1, un cliente que desea sacar un CDT impacta diferentes microservicios para lograr su objetivo. Sin embargo, no es necesario emular el comportamiento de todos los microservicios, sólo los que interactúan con el que deseamos diseñar (para nuestro ejemplo, es el de color amarillo: __Micro de CDTs__). Las pruebas que impactan a todo el flujo, se conocen como pruebas E2E (_End-To-End_). El microservicio de CDTs se comunica con dos servicios: el de saldos (interno) y el que realiza el registro a la Superintendencia Financiera como ente regulador (externo). En esta sección, analizaremos la primera integración.
+Como se aprecia en la Figura 1, un cliente que desea sacar un CDT impacta diferentes microservicios para lograr su objetivo. Sin embargo, no es necesario emular el comportamiento de todos los microservicios, sólo los que interactúan con el que estemos diseñando (para nuestro ejemplo, es el de color amarillo: __Micro de CDTs__). Las pruebas que impactan a todo el flujo se conocen como pruebas E2E (_End-To-End_). El microservicio de CDTs se comunica con dos servicios: el de saldos (interno) y el que realiza el registro a la Superintendencia Financiera como ente regulador (externo). En esta sección, analizaremos la primera integración.
 
+En la integración entre el _Micro de CDTs_ y el _Micro de Saldos_, se observa que cada uno cuenta con una base de datos PostgreSQL. Lo que significa que, si queremos ver la forma en cómo se integra una lógica con la otra, debemos crear, no sólo el contenedor del otro microservicio sino también la de su base de datos. Debido a ello, deberíamos utilizar Docker Compose para facilitar el manejo de estos contenedores, que podría ser algo como lo siguiente:
 
+```yaml
+services:
+    DB_CDTs:
+        container_name: db_cdts
+        image: 'postgres:16.0'
+        environment:
+        - 'POSTGRES_DB=cdts'
+        - 'POSTGRES_PASSWORD=secret_password'
+        - 'POSTGRES_USER=example'
+        ports:
+        - '5432'
+    DB_Saldos:
+        container_name: db_saldos
+        image: 'postgres:15.0'
+        environment:
+        - 'POSTGRES_DB=saldos'
+        - 'POSTGRES_PASSWORD=secret_password'
+        - 'POSTGRES_USER=example'
+        ports:
+        - '5432:5431'
+    Micro_Saldos:
+        container_name: micro_saldos
+        image: 'artifactory/micro_saldos:2.1.3'
+        environment:
+        - 'DB_Name=saldos'
+        - 'DB_Password=secret_password'
+        - 'DB_User=example'
+        - 'DB_Port=5431'
+        ports:
+        - '8080:8081'
+```
 
+De esta forma, tenemos habilitado el microservicio de saldos, con su base de datos de pruebas, para realizar test de integración y pruebas funcionales completas que nos permitan verificar el cumplimiento de los requerimientos funcionales de flujos completos.
 
 ### 4.2. Integraciones con software externo
 
-Para los casos en donde no se dispone de microservicios contenerizados o que requieren integración con servicios externos al ecosistema organizacional que no cuentan con ambientes _sandbox_ de pruebas, la mejor estrategia de testing para estos casos involucra el uso de `WireMock`. 
+Existen circunstancias en donde debemos conectarnos con microservicios externos sobre los que no tenemos ningún control. Puede que alguno de estos servicios no tengan disponibles ambientes de _sandbox_ para realizar pruebas de integración completas. En estas situaciones, debemos mockear estos servicios externos a través de `WireMock`. 
+
+En el ejemplo de la Figura 1 (sección 4.1), el microservicio de CDTs necesita comunicarse con un microservicio de la Superintendencia Financera para hacer el registro de nuevos CDTs, dando cumplimiento a las regulaciones expuestas por el gobierno nacional. Este microservicio es externo, legado y no cuenta con ambiente sandbox de pruebas. Como es un microservicio oficial, no podemos conectarnos para registrar CDTs falsos, porque sería un delito. Lo que nos obliga a mockear el servicio con las posibles respuestas para corroborar que nuestro microservicio opere de forma adecuada en diferentes circunstancias. A continuación, se expone cómo se podría utilizar `WireMock` en estas situaciones.
+
+```java
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
+public abstract class ExternalIntegrationTest {
+    private static final int WIREMOCK_PORT = 8180;
+    private static WireMockServer wireMockServer;
+
+    @BeforeAll
+    public static void setUp() {
+        startWireMockServer();
+    }
+
+    private static void startWireMockServer() {
+        wireMockServer = new WireMockServer(wireMockConfig().port(WIREMOCK_PORT));
+        wireMockServer.start();
+        configureFor("localhost", WIREMOCK_PORT);
+        stubForOpenIDConfiguration();
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        if (wireMockServer != null && wireMockServer.isRunning()) {
+            wireMockServer.stop();
+        }
+    }
+}
+```
+
+Para utilizar `WireMock` se requiere 
 
 
