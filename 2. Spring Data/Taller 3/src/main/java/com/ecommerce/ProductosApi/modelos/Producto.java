@@ -2,6 +2,8 @@ package com.ecommerce.ProductosApi.modelos;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,11 +16,13 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "Producto")
-@Data                   //getters/setters
+@Data           
 @AllArgsConstructor     //Crea un constructor con todos los argumentos
 @NoArgsConstructor      //Crea un constructor sin argumentos   
 @Builder                //Facilita la creación de objetos
@@ -32,6 +36,7 @@ public class Producto {
     private Double precio;
     private Integer inventario;
 
-    @OneToMany(mappedBy = "producto", cascade = CascadeType.DETACH)
-    private List<Articulo> articulos;
+    //@OneToMany(mappedBy = "producto", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    //@JsonIgnore
+    //private List<Articulo> articulos;
 }
