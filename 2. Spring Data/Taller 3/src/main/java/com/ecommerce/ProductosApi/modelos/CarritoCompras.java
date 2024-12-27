@@ -35,7 +35,7 @@ public class CarritoCompras {
     @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Articulo> articulos = new ArrayList<>();
 
-    public Integer getCantidadArticulos () {
+    public Integer calcularCantidadArticulos () {
         Integer cantidad = 0;
         for (Articulo articulo : articulos) {
             cantidad = cantidad + articulo.getCantidad();
@@ -43,7 +43,7 @@ public class CarritoCompras {
         return cantidad;
     }
 
-    public Double getTotal () {
+    public Double calcularTotal () {
         Double suma = 0.0;
         for (Articulo articulo : articulos) {
             suma = suma + articulo.getSubtotal();

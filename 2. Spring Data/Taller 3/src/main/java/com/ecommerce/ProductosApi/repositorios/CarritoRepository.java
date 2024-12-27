@@ -9,5 +9,5 @@ import com.ecommerce.ProductosApi.modelos.Articulo;
 import com.ecommerce.ProductosApi.modelos.CarritoCompras;
 
 public interface CarritoRepository extends JpaRepository<CarritoCompras, Long> {
-
+    public CarritoCompras findByCarritoId(Long carritoId);
 }
