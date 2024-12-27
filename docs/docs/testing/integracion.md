@@ -225,6 +225,4 @@ public abstract class ExternalIntegrationTest {
 }
 ```
 
-Para utilizar `WireMock` se requiere 
-
 
