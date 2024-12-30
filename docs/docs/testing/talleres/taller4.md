@@ -141,6 +141,7 @@ Los requerimientos funcionales de esta sección incluyen:
     * Obtener un documento __sin obtener toda la lista registrada__.
     * Eliminar un documento.
 5. No habilitar método de actualización de documentos (se presta para problemas legales a futuro).
+6. No se pueden eliminar documentos con cuentas bancarias vinculadas.
 </TabItem>
 <TabItem value="test-docs" label="Test unitarios">
 A continuación, se definen los test unitarios que el código debe aprobar para cumplir con los requerimientos funcionales definidos.
@@ -273,3 +274,40 @@ public class DocumentoServiceTest {
 ```
 </TabItem>
 </Tabs>
+
+
+### 3.2. Operaciones de Cuentas Bancarias
+
+Para las cuentas bancarias, se tiene los siguientes requerimientos funcionales.
+
+1. Se debe crear una cuenta bancaria con un documento legítimo, por lo que debe cumplir con los requerimientos de la sección 3.1.
+2. Cuando se crea una cuenta bancaria nueva, su saldo inicial debe ser cero. No puede tener otro valor.
+3. El número de cuenta debe tener entre 8 y 12 caracteres. Sólo pueden ser números.
+4. Los valores de las transacciones pueden ser por valores positivos (consignación) o negativos (retiros). No pueden ser cero. 
+5. Después de cada transacción, la cuenta no puede quedar con saldo negativo. Debe fallar antes con error: `500: el saldo de la cuenta no puede ser negativo`.
+6. Si la `cuentaId` no existe, debe fallar con el error: `404: no se encontró la cuenta bancaria con cuentaId = {cuentaId}`.
+7. Antes de eliminar una cuenta bancaria, debe verificar que no haya sido registrada como cuenta bancaria de destino de una `InversionVirtual`.
+
+### 3.3. Operaciones de Inversión Virtual
+
+Las inversiones virtuales deben cumplir con los siguientes requerimientos.
+
+1. Sólo se deben poder realizar dos operaciones de inversión:
+    * Crear una nueva inversión: todos los campos son obligatorios.
+    * Reclamar una inversión: la cuenta de destino debe existir. Sólo se puede reclamar después de la _fecha de retiro_.
+2. Al reclamar una inversión, la cuenta bancaria de destino debe recibirlo en forma de consignación.
+3. Al crear una inversión, se debe retirar de la cuenta de origen. La cuenta de origen debe tener saldo suficiente para ello, de lo contrario no se debe crear la inversión.
+
+### 3.4. Operaciones del Cliente
+
+Los requerimientos del cliente:
+
+1. Para crear un cliente, sólo se requiere un `nombre` y una `fechaVinculacion`. Los `documentos`, `cuentas` e `inversiones` deben inicializarse como una lista vacía.
+2. El cliente puede realizar las siguientes operaciones:
+    * Registrar un nuevo documento.
+    * Eliminar un documento existente.
+    * Abrir o eliminar una cuenta bancaria.
+    * Eliminar una cuenta bancaria.
+    * Realizar transacciones con sus cuentas.
+    * Abrir y reclamar inversiones.
+3. Para eliminar a un cliente de la base de datos, este no debe tener registradas `inversiones`, `cuentas` ni `documentos` a su nombre. 
