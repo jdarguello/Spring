@@ -15,50 +15,14 @@ import org.example.servicios.DocumentoValidaciones;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class DocumentoServiceTest {
+public class DocumentoServiceTest extends UnitTest {
     
     private DocumentoValidaciones validaciones;
 
-    //Clientes
-    private Cliente Juan;
-    private Cliente Fernanda;
-
-    //Documentos
-    private Documento documentoJuan;
-    private Documento documentoFernanda;
-
     @BeforeEach
     void setUp () {
+        super.setUp();
         validaciones = new DocumentoService();
-
-        //Fecha de vinculación
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(1992, Calendar.FEBRUARY, 10);
-
-        //Clientes
-        Juan = Cliente.builder()
-        .nombre("Juan Esteban Hernandez")
-        .fechaVinculacion(calendar.getTime())
-        .build();
-
-        calendar.set(2001, Calendar.MAY, 16);
-        Fernanda = Cliente.builder()
-        .nombre("Fernanda Aristizabal")
-        .fechaVinculacion(calendar.getTime())
-        .build();
-
-        //Documentos
-        documentoJuan = Documento.builder()
-            .cliente(Juan)
-            .numeroDoc("10982908")
-            .tipo("CC")
-            .build();
-
-        documentoFernanda = Documento.builder()
-            .cliente(Fernanda)
-            .numeroDoc("AE392183")
-            .tipo("PP")
-            .build();
     }
 
     //Requerimientos funcionales 1, 2 y 4

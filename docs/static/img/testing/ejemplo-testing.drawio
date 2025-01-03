@@ -1,0 +1,84 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="26.0.2" pages="2">
+  <diagram name="Página-1" id="VKp71kUgDDh2UhdQiumm">
+    <mxGraphModel dx="1026" dy="684" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="7eH23ZiM0h0CY9y43S9W-1" value="CalculadoraTest" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;verticalAlign=top;fontSize=17;" vertex="1" parent="1">
+          <mxGeometry x="160" y="180" width="310" height="760" as="geometry" />
+        </mxCell>
+        <mxCell id="7eH23ZiM0h0CY9y43S9W-2" value="SumaTest (@Test)" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="255" y="630" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="7eH23ZiM0h0CY9y43S9W-3" value="Resta (@Test)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="255" y="740" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="7eH23ZiM0h0CY9y43S9W-4" value="Multiplicación (@Test)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="255" y="810" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="7eH23ZiM0h0CY9y43S9W-5" value="@BeforeAll&lt;div&gt;(opcional)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Cuando se requieren configuraciones. Ejemplo: habilitar base de datos de pruebas&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="207.5" y="220" width="215" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="7eH23ZiM0h0CY9y43S9W-6" value="@BeforeEach&lt;div&gt;(Opcional)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Operaciones que se realizan ANTES de cada test.&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="320" width="310" height="160" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="1cRlfAGRYLAQ6y3VlvOT" name="Página-2">
+    <mxGraphModel dx="1026" dy="684" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="aCmA02yCsuWp36RvkCQL-1" value="Billetera" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="220" width="220" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="aCmA02yCsuWp36RvkCQL-2" value="&lt;div&gt;- billeteraId: Long&lt;/div&gt;- cliente: Cliente&lt;div&gt;- saldo: Double&lt;/div&gt;&lt;div&gt;- numeroCelular: Integer&lt;/div&gt;&lt;div&gt;- bolsillos: List&amp;lt;Bolsillo&amp;gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="aCmA02yCsuWp36RvkCQL-1">
+          <mxGeometry y="26" width="220" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="aCmA02yCsuWp36RvkCQL-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="aCmA02yCsuWp36RvkCQL-1">
+          <mxGeometry y="90" width="220" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="aCmA02yCsuWp36RvkCQL-4" value="+ getters/setters&lt;div&gt;+ transaccion(valor, bolsilloId): Boolean&lt;/div&gt;&lt;div&gt;+ getSaldoTotal(): Double&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="aCmA02yCsuWp36RvkCQL-1">
+          <mxGeometry y="98" width="220" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="aCmA02yCsuWp36RvkCQL-5" value="Cliente" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="220" width="160" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="aCmA02yCsuWp36RvkCQL-6" value="&lt;div&gt;- clienteId: Long&lt;/div&gt;- nombre:String&lt;div&gt;- billeteras: List&amp;lt;Billetera&amp;gt;&lt;/div&gt;&lt;div&gt;- fechaVinculacion: Date&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="aCmA02yCsuWp36RvkCQL-5">
+          <mxGeometry y="26" width="160" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="aCmA02yCsuWp36RvkCQL-7" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="aCmA02yCsuWp36RvkCQL-5">
+          <mxGeometry y="90" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="aCmA02yCsuWp36RvkCQL-8" value="+ getters/setters&lt;div&gt;+ getSaldoTotal(): Double&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="aCmA02yCsuWp36RvkCQL-5">
+          <mxGeometry y="98" width="160" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="aCmA02yCsuWp36RvkCQL-9" value="Bolsillo" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="607" y="222" width="160" height="104" as="geometry" />
+        </mxCell>
+        <mxCell id="aCmA02yCsuWp36RvkCQL-10" value="&lt;div&gt;- bolsilloId: Long&lt;/div&gt;- saldo: Double" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="aCmA02yCsuWp36RvkCQL-9">
+          <mxGeometry y="26" width="160" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="aCmA02yCsuWp36RvkCQL-11" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="aCmA02yCsuWp36RvkCQL-9">
+          <mxGeometry y="70" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="aCmA02yCsuWp36RvkCQL-12" value="+ getters/setters" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="aCmA02yCsuWp36RvkCQL-9">
+          <mxGeometry y="78" width="160" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="aCmA02yCsuWp36RvkCQL-13" value="" style="endArrow=diamondThin;endFill=1;endSize=24;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="aCmA02yCsuWp36RvkCQL-2" target="aCmA02yCsuWp36RvkCQL-6">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="330" y="350" as="sourcePoint" />
+            <mxPoint x="490" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="aCmA02yCsuWp36RvkCQL-14" value="" style="endArrow=diamondThin;endFill=1;endSize=24;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=-0.019;exitY=0.682;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="aCmA02yCsuWp36RvkCQL-10" target="aCmA02yCsuWp36RvkCQL-2">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="330" y="360" as="sourcePoint" />
+            <mxPoint x="490" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

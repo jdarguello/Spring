@@ -1,0 +1,10 @@
+services:
+  db-taller5:
+      container_name: taller5
+      image: 'postgres:latest'
+      environment:
+      - 'POSTGRES_DB=inv-virtual'
+      - 'POSTGRES_PASSWORD=pass-taller5'
+      - 'POSTGRES_USER=usuario-taller5'
+      ports:
+      - '5432'

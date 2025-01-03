@@ -18,7 +18,9 @@ server:
 
 ---
 spring:
-  profiles: test
+  config:
+    activate:
+      on-profile: test
   datasource:
     url: jdbc:h2:mem:test-db
     username: test-user
@@ -26,7 +28,9 @@ spring:
 
 ---
 spring:
-  profiles: dev
+  config:
+    activate:
+      on-profile: dev
   datasource:
     url: jdbc:mysql://localhost:3306/dev-db
     username: dev-user
