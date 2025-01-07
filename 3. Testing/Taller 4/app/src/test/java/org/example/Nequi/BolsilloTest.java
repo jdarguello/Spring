@@ -28,6 +28,7 @@ public class BolsilloTest {
 
      @BeforeEach
      public void setUp () {
+        Bolsillo.contadorIds = 0L;
         bolsilloMigue = new Bolsillo();
      }
 

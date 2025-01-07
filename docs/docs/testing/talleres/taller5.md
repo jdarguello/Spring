@@ -62,7 +62,13 @@ services:
 
 A diferencia del Taller 4, las relaciones entre clases de los modelos descritos presenta ciertas complejidades que se recomienda probar mediante test unitarios. Adicional, se debería también corroborar la capa de persistencia de datos. 
 
-Dada que la mayoría de las integraciones requieren la existencia de la clase `Cliente`, iniciaremos creándola de la siguiente forma:
+Dada que la mayoría de las integraciones requieren la existencia de la clase `Cliente`, iniciaremos creándola de la siguiente forma. Además, también estableceremos una clase abstracta con la configuración general de nuestros sets de test unitarios para la capa de modelos.
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+    <TabItem value="modelo-cliente" label="Cliente" default>
 
 ```java
 @Table(name = "Cliente")
@@ -89,13 +95,43 @@ public class Cliente {
     
 }
 ```
+    </TabItem>
+    <TabItem value="modelo-test" label="ModelosTest" default>
+```java
+public abstract class ModelosTest {
+
+    //Clientes
+    protected Cliente Fernanda;
+
+    //Documentos
+    protected Documento documentoFernanda;
+
+    @BeforeEach
+    public void setUp () {
+        //Fecha de vinculación
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2001, Calendar.MAY, 16);
+
+        //Clientes
+        Fernanda = Cliente.builder()
+        .nombre("Fernanda Aristizabal")
+        .fechaVinculacion(calendar.getTime())
+        .build();
+
+        documentoFernanda = Documento.builder()
+            .cliente(Fernanda)
+            .numeroDocumento("AE392183")
+            .tipo("PP")
+            .build();
+    }
+}
+```
+    </TabItem>
+</Tabs>
 
 ### 3.1. Documento
 
 Para la clase `Documento`:
-
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 <Tabs>
     <TabItem value="doc-model" label="Modelo" default>
@@ -116,6 +152,9 @@ import TabItem from '@theme/TabItem';
         @ManyToOne
         @JoinColumn(name = "clienteId")
         private Cliente cliente;
+
+        //@OneToOne
+        //private CuentaBancaria cuenta;
     }
     ```
     </TabItem>
@@ -126,64 +165,39 @@ import TabItem from '@theme/TabItem';
     }
     ```
     </TabItem>
-    <TabItem value="doc-test" label="Test unitarios">
-    ```java
-    @DataJpaTest
-    @ActiveProfiles("test_unitarios")
-    public class DocumentoTest {
-        
-        @Autowired
-        private DocumentoRepository repository;
+    <TabItem value="doc-modelo-test" label="Test unitarios">
+```java
+@DataJpaTest
+@ActiveProfiles("test_unitarios")
+public class DocumentoTest extends ModelosTest {
+    
+    @Autowired
+    private DocumentoRepository repository;
 
-        //Clientes
-        private Cliente Fernanda;
+    @Test
+    public void saveAndFind() {
+        documentoFernanda = repository.save(documentoFernanda);
 
-        //Documentos
-        private Documento documentoFernanda;
+        Documento documentoObtenido = repository.findById(documentoFernanda.getDocumentoId()).get();
 
-        @BeforeEach
-        void setUp () {
-            //Fecha de vinculación
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(2001, Calendar.MAY, 16);
-
-            //Clientes
-            Fernanda = Cliente.builder()
-            .nombre("Fernanda Aristizabal")
-            .fechaVinculacion(calendar.getTime())
-            .build();
-
-            documentoFernanda = Documento.builder()
-                .cliente(Fernanda)
-                .numeroDocumento("AE392183")
-                .tipo("PP")
-                .build();
-        }
-
-        @Test
-        public void saveAndFind() {
-            documentoFernanda = repository.save(documentoFernanda);
-
-            Documento documentoObtenido = repository.findById(documentoFernanda.getDocumentoId()).get();
-
-            assertNotNull(documentoObtenido);
-            assertEquals(documentoObtenido.getNumeroDocumento(), "AE392183");
-            assertEquals(documentoObtenido.getTipo(), "PP");
-        }
-
-        @Test
-        public void delete() {
-            documentoFernanda = repository.save(documentoFernanda);
-
-            repository.delete(documentoFernanda);
-
-            assertThrows(
-                Exception.class,
-                () -> repository.findById(documentoFernanda.getDocumentoId()).get()
-            );
-        }
+        assertNotNull(documentoObtenido);
+        assertEquals(documentoObtenido.getNumeroDocumento(), "AE392183");
+        assertEquals(documentoObtenido.getTipo(), "PP");
     }
-    ```
+
+    @Test
+    public void delete() {
+        documentoFernanda = repository.save(documentoFernanda);
+
+        repository.delete(documentoFernanda);
+
+        assertThrows(
+            Exception.class,
+            () -> repository.findById(documentoFernanda.getDocumentoId()).get()
+        );
+    }
+}
+```
     </TabItem>
 </Tabs>
 
@@ -191,10 +205,178 @@ import TabItem from '@theme/TabItem';
 
 Para la `CuentaBancaria`, se tiene lo siguiente:
 
+<Tabs>
+    <TabItem value="cuenta-modelo" label="Modelo" default>
 
+```java
+@Table(name = "Cuenta_Bancaria")
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CuentaBancaria {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long cuentaId;
+    private Long numeroCuenta;
+    private Double saldo = 0.0;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime fechaCreacion = LocalDateTime.now();
+
+    @ManyToOne
+    @JoinColumn(name = "clienteId")
+    private Cliente cliente;
+
+    @OneToOne(mappedBy = "cuenta", cascade = CascadeType.ALL)
+    @JoinColumn(name = "documentoId")
+    private Documento documento;
+}
+```
+    </TabItem>
+    <TabItem value="cuenta-repo" label="Repository">
+
+```java
+public interface CuentaBancariaRepository extends JpaRepository<CuentaBancaria, Long> {
+    
+}
+```
+    </TabItem>
+    <TabItem value="cuenta-modelo-test" label="Test unitarios">
+
+```java
+@DataJpaTest
+@ActiveProfiles("test_unitarios")
+public class CuentaBancariaTest extends ModelosTest {
+    
+    @Autowired
+    private CuentaBancariaRepository repository;
+
+    @Test
+    public void saveAndFind() {
+        cuentaFernanda = repository.save(cuentaFernanda);
+
+        CuentaBancaria cuentaObtenida = repository.findById(cuentaFernanda.getCuentaId()).get();
+
+        assertNotNull(cuentaObtenida);
+        assertEquals("Fernanda Aristizabal", cuentaObtenida.getCliente().getNombre());
+        assertEquals(31398734562L, cuentaObtenida.getNumeroCuenta());
+    }
+
+    @Test
+    public void delete() {
+        cuentaFernanda = repository.save(cuentaFernanda);
+
+        repository.delete(cuentaFernanda);
+
+        assertThrows(
+            Exception.class,
+            () -> repository.findById(cuentaFernanda.getCuentaId()).get()
+        );
+    }
+}
+```
+    </TabItem>
+</Tabs>
+
+### 3.3. Inversión Virtual
+
+Para la `InversionVirtual`:
+
+<Tabs>
+    <TabItem value="inversion-modelo" label="Modelo" default>
+
+```java
+@Table(name = "Inversion_Virtual")
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class InversionVirtual {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long inversionId;
+
+    @Column(nullable = false)
+    private Double valor;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime fechaCreacion = LocalDateTime.now();
+
+    @Temporal(TemporalType.DATE)
+    private LocalDate tiempoDuracion;
+
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "cuentaOrigenId", referencedColumnName = "cuentaId", nullable = false)
+    private CuentaBancaria cuentaOrigen;
+
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "cuentaDestinoId", referencedColumnName = "cuentaId", nullable = false)
+    private CuentaBancaria cuentaDestino;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "clienteId")
+    private Cliente cliente;
+}
+```
+    </TabItem>
+    <TabItem value="inverson-repo" label="Repository">
+```java
+public interface InversionVirtualRepository extends JpaRepository<InversionVirtual, Long> {
+    
+}
+```
+    </TabItem>
+    <TabItem value="inversion-modelo-test" label="Test unitarios">
+```java
+@DataJpaTest
+@ActiveProfiles("test_unitarios")
+public class InversionVirtualTest extends ModelosTest {
+    
+    @Autowired
+    private InversionVirtualRepository inversionRepository;
+
+    @Autowired
+    private CuentaBancariaRepository cuentaRepository;
+
+    @BeforeEach
+    @Override
+    public void setUp() {
+        super.setUp();  //Ejecuta la lógica del padre
+
+        //Crear la cuenta bancaria de Fernanda, para que sirva 
+        //como cuenta de Origen y Destino
+        cuentaRepository.save(cuentaFernanda);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        cuentaRepository.deleteAll();
+    }
+
+    @Test
+    public void saveAndFind() {
+        inversionFernanda = inversionRepository.save(inversionFernanda);
+
+        InversionVirtual inversionObtenida = inversionRepository.findById(inversionFernanda.getInversionId()).get();
+
+        assertNotNull(inversionObtenida);
+        assertEquals("Fernanda Aristizabal", inversionObtenida.getCliente().getNombre());
+        assertEquals(31398734562L, inversionObtenida.getCuentaOrigen().getNumeroCuenta());
+        assertEquals(31398734562L, inversionObtenida.getCuentaDestino().getNumeroCuenta());
+    }
+}
+```
+    </TabItem>
+</Tabs>
 
 ## 4. Servicios
 
+La lógica de la capa de los servicios y los test unitarios construídos son los mismos desarrollados en el [Taller 4](taller4.md).
+
 ## 5. Controladores
+
+En esta capa, expondremos las APIs requeridas por el frontend. Si queremos una experiencia centrada en el usuario, las APIs deberían manejarse a través de nuestra `ClienteService`, como se aprecia en la Figura 2.
 

@@ -2,7 +2,6 @@ package com.Bancolombia.InversionVirtual.modelos;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 
 import java.util.Calendar;
@@ -17,35 +16,10 @@ import com.Bancolombia.InversionVirtual.repositories.DocumentoRepository;
 
 @DataJpaTest
 @ActiveProfiles("test_unitarios")
-public class DocumentoTest {
+public class DocumentoTest extends ModelosTest {
     
     @Autowired
     private DocumentoRepository repository;
-
-    //Clientes
-    private Cliente Fernanda;
-
-    //Documentos
-    private Documento documentoFernanda;
-
-    @BeforeEach
-    void setUp () {
-        //Fecha de vinculación
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2001, Calendar.MAY, 16);
-
-        //Clientes
-        Fernanda = Cliente.builder()
-        .nombre("Fernanda Aristizabal")
-        .fechaVinculacion(calendar.getTime())
-        .build();
-
-        documentoFernanda = Documento.builder()
-            .cliente(Fernanda)
-            .numeroDocumento("AE392183")
-            .tipo("PP")
-            .build();
-    }
 
     @Test
     public void saveAndFind() {
