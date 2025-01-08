@@ -2,6 +2,7 @@ package com.Bancolombia.InversionVirtual.modelos;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
@@ -34,13 +35,10 @@ public class Documento {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "clienteId", nullable = false)
+    @JsonBackReference
     private Cliente cliente;
 
     @OneToOne
+    @JsonBackReference
     private CuentaBancaria cuenta;
-
-    @Override
-    public String toString() {
-        return "";
-    }
 }

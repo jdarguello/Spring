@@ -378,5 +378,26 @@ La lógica de la capa de los servicios y los test unitarios construídos son los
 
 ## 5. Controladores
 
-En esta capa, expondremos las APIs requeridas por el frontend. Si queremos una experiencia centrada en el usuario, las APIs deberían manejarse a través de nuestra `ClienteService`, como se aprecia en la Figura 2.
+En esta capa, expondremos las APIs requeridas por el frontend. Si queremos una experiencia centrada en el usuario, las APIs deberían manejarse a través de nuestra `ClienteService`, que comunica las necesidades del cliente de forma transparente para cada servicio. Cada controlador tendrá tanto test unitarios como de integración.
+
+### 5.1. Documentos
+
+Si nuestro cliente desea registrar un nuevo documento, leer su información o eliminarlo, debería poder hacerlo. Por cuestiones de seguridad, no debería poder modificarlo. 
+
+<Tabs>
+    <TabItem value="doc-controlador" label="Controlador" default>
+
+```java
+
+```
+    </TabItem>
+    <TabItem value="doc-controlador-tests-unitarios" label="Test unitarios">
+```java
+
+```
+    </TabItem>
+    <TabItem value="doc-controlador-test-integracion" label="Test integración">
+
+    </TabItem> 
+</Tabs>
 
