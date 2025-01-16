@@ -100,6 +100,18 @@ const config: Config = {
           position: 'left',
           label: '4. Spring Security',
         },
+        {
+          type: 'docSidebar',
+          sidebarId: 'funcReactSidebar',
+          position: 'left',
+          label: '5. Concurrencia y Paralelismo',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'monitoreoSidebar',
+          position: 'left',
+          label: '6. Monitoreo',
+        },
       ],
     },
     footer: {

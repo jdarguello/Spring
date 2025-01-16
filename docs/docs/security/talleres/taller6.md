@@ -2,6 +2,6 @@
 sidebar_position: 1
 ---
 
-# Ejercicio 2
+# Taller 6
 
 ...
