@@ -388,16 +388,161 @@ Si nuestro cliente desea registrar un nuevo documento, leer su información o el
     <TabItem value="doc-controlador" label="Controlador" default>
 
 ```java
+@RestController
+@RequestMapping("/api/docs")
+public class DocumentoControlador {
+    
+    private ClienteOperaciones operaciones;
 
+    public DocumentoControlador(ClienteOperaciones operaciones) {
+        this.operaciones = operaciones;
+    }
+
+    @PostMapping
+    public ResponseEntity<?> nuevoDocumento(@RequestParam(name = "clienteId") Long clienteId, 
+                                            @RequestBody Documento documento) throws Exception {
+
+        Documento documentoRegistrado = new Documento();
+        try {
+            documentoRegistrado = this.operaciones.registrarNuevoDocumento(clienteId, documento);
+        } catch (SQLException exception){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                errorMessage(400, "Bad Request", 
+                    exception.getMessage(), "/api/docs")
+            );
+        } catch (InstantiationException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                errorMessage(400, "Bad Request", 
+                    exception.getMessage(), "/api/docs")
+            );
+        }
+        
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            documentoRegistrado
+        );
+    }
+
+    @GetMapping
+    public Documento getDocumento(@RequestParam(name = "clienteId") Long clienteId, 
+                                  @RequestParam(name = "documentoId") Long documentoId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDocumento'");
+    }
+
+    @DeleteMapping
+    public Boolean eliminarDocumento(@RequestParam(name = "clienteId") Long clienteId, 
+                                    @RequestParam(name = "documentoId") Long documentoId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'eliminarDocumento'");
+    }
+
+    private Map errorMessage(Integer status, String error, String message, String path) {
+        return Map.of(
+            "timestamp", LocalDateTime.now(),
+            "status", status,
+            "error", error,
+            "message", message,
+            "path", path
+        );
+    }
+}
 ```
     </TabItem>
     <TabItem value="doc-controlador-tests-unitarios" label="Test unitarios">
 ```java
+@WebMvcTest(DocumentoControlador.class)
+public class DocumentoControladorTest {
 
+    @Autowired
+    private MockMvc mvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;  //Serializador JSON
+
+    @Autowired
+    private ClienteOperaciones clienteOperaciones;
+
+    @TestConfiguration
+    public static class TestConfig {
+        @Bean
+        public ClienteOperaciones mockeOperaciones() {
+            return mock(ClienteOperaciones.class);
+        }
+    }
+
+    private Documento cedulaFernanda;
+
+    private String requestBody;
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        cedulaFernanda = Documento.builder()
+            .documentoId(2L)
+            .tipo("CC")
+            .numeroDocumento("10983929238")
+            .build();
+
+        when(clienteOperaciones.registrarNuevoDocumento(1L, cedulaFernanda))
+            .thenReturn(cedulaFernanda);
+
+        requestBody = objectMapper.writeValueAsString(cedulaFernanda);   //Serialización JSON de la cédula
+    }
+
+    @Test
+    public void nuevoDocumento201 () throws Exception {
+        MvcResult response = postNuevoDocumento(status().isCreated(), requestBody);
+
+        Documento documentoObtenido = objectMapper.readValue(response.getResponse().getContentAsString(), Documento.class);
+
+        assertEquals(documentoObtenido.getDocumentoId(), 2L);
+        assertEquals(documentoObtenido.getTipo(), "CC");
+        assertEquals(documentoObtenido.getNumeroDocumento(), "10983929238");
+    }
+
+    @Test
+    public void nuevoDocumento400YaRegistrado() throws Exception {
+         when(clienteOperaciones.registrarNuevoDocumento(1L, cedulaFernanda))
+            .thenThrow(new SQLException("400: el documento ya está registrado en BD"));
+
+        
+        MvcResult result = postNuevoDocumento(status().isBadRequest(), requestBody);
+
+        ErrorModel error = objectMapper.readValue(result.getResponse().getContentAsString(), ErrorModel.class);
+
+
+        assertEquals(error.status(), 400);
+        assertEquals(error.message(), "400: el documento ya está registrado en BD");
+        assertEquals(error.path(), "/api/docs");
+    }
+
+    @Test
+    public void nuevoDocumento400InfoIncompleta() throws Exception {
+        //Error de documento incompleto
+        Documento pasaporteIncompleto = Documento.builder()
+            .tipo("PP")
+            .build();
+        
+        when(clienteOperaciones.registrarNuevoDocumento(1L, pasaporteIncompleto))
+            .thenThrow(new InstantiationException("400: la información del documento está incompleta"));
+        
+        MvcResult result = postNuevoDocumento(status().isBadRequest(), objectMapper.writeValueAsString(pasaporteIncompleto));
+
+        ErrorModel error = objectMapper.readValue(result.getResponse().getContentAsString(), ErrorModel.class);
+
+        assertEquals(error.status(), 400);
+        assertEquals(error.message(), "400: la información del documento está incompleta");
+    }
+
+    private MvcResult postNuevoDocumento(ResultMatcher status, String requestBody) throws Exception {
+        return mvc.perform(post("/api/docs")
+            .param("clienteId", "1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
+        .andExpect(status)
+        .andReturn();
+    }
+}
 ```
     </TabItem>
-    <TabItem value="doc-controlador-test-integracion" label="Test integración">
-
-    </TabItem> 
 </Tabs>
 

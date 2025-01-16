@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -35,10 +36,13 @@ public class Documento {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "clienteId", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
+    @JsonManagedReference
+    @ToString.Exclude
     private Cliente cliente;
 
     @OneToOne
     @JsonBackReference
+    @JsonIgnore
     private CuentaBancaria cuenta;
 }

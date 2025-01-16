@@ -8,7 +8,7 @@ import com.Bancolombia.InversionVirtual.modelos.InversionVirtual;
 public interface ClienteOperaciones {
     Cliente nuevoCliente (Cliente cliente);
     Cliente getCliente (Long clienteId);
-    Documento registrarNuevoDocumento (Long clienteId, Documento documento);
+    Documento registrarNuevoDocumento (Long clienteId, Documento documento) throws Exception;
     CuentaBancaria abrirNuevaCuenta (Long clienteId, CuentaBancaria nuevaCuenta);
     InversionVirtual abrirNuevaInversion (Long clienteId, InversionVirtual nuevaInversion);
     Boolean reclamarInversion (Long clienteId, Long inversionId);
