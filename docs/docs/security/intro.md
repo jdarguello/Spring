@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Introducción
 
-La seguridad informática es amplia y abarca diferentes escenarios. Algunos de los más relevantes son: 
+La seguridad informática es amplia y se aplica en diferentes capas. Algunas de las más relevantes son: 
 
 * __Definiciones de negocio:__ especifica las funcionaldiades que debe tener un sistema para evitar problemas de seguridad. Por ejemplo, si hablamos de una aplicación bancaria, la funcionalidad de los _bolsillos de ahorro_ no es sólo para subdividir el dinero de una cuenta de ahorros en múltiples secciones. También sirve para proteger al cliente cuando ocurren escenarios de fraude, como la clonación de tarjetas débito. De esta forma, el delincuente sólo podrá acceder al saldo disponible en la cuenta de ahorros, no la de los bolsillos. Otro ejemplo dentro de este espectro son los topes diarios en las transacciones definidas por el cliente. El delincuente sólo podrá robar la cantidad máxima definida por el cliente, aún si este tiene saldo disponible para realizar más transacciones.
 * __Arquitectura de la aplicación:__ la arquitectura de la aplicación conecta las definiciones de negocio y las lleva un paso más allá al especificar la lógica de negocio con la capa de persistencia de datos. Una arquitectura robusta de la aplicación no debería habilitar todas las operaciones CRUD sobre las entidades del negocio, sino las estrictamente necesarias. Por ejemplo, no se deberían habilitar APIs en el backend para modificar el saldo de una cuenta bancaria. De ser así, si un cliente, con conocimiento en desarrollo de software, conociera el endpoint para actualizar el saldo de su cuenta bancaria, podría solicitar agregarse una cantidad indefinida de dinero. Sin ser necesariamente un "ciberdelincuente", ya que no está vulnerando el software bancario.
@@ -22,13 +22,7 @@ Spring Security se trata de la dependencia base para el manejo de usuarios y per
 
 En cuanto a la _autorización_, permite emplear desde protocolos sencillos basados en permisos hasta la implementación de metodologías robustas tipo RBAC (_"Role-Based Access Control"_). También, permite la customización a través de anotaciones como `@Preauthorize`, `@PostAuthorize` y `@Secured`.
 
-Spring Security previene algunos ataques frecuentes, como el CSRF (_"Cross-Site Request Forgery"_) y el XSS (_"Cross-Site Scripting"_). Permite el manejo de contraseñas mediante protocolos de encriptamiento y codificación, usando algoritmos como bcrypt, Argon2 y PBKDF2, entre otras funcionalidades. 
+Adicional, Spring Security previene algunos ataques frecuentes, como el CSRF (_"Cross-Site Request Forgery"_) y el XSS (_"Cross-Site Scripting"_). Permite el manejo de contraseñas mediante protocolos de encriptamiento y codificación, usando algoritmos como bcrypt, Argon2 y PBKDF2, entre otras funcionalidades. 
 
 
-## 2. Protocolos de Autenticación
-
-
-
-
-## 3. Protocolos de Autorización
 
