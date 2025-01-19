@@ -10,7 +10,7 @@ En su forma más elemental, Spring Security funciona como un filtro. El microser
 
 Figura 1. Lógica de autenticación. __Fuente:__ [Cloudflare](https://www.cloudflare.com/learning/access-management/what-is-authentication/)
 
-En el presente capítulo, aprenderemos sobre cómo se establecen estas configuraciones y la metodología básica de trabajo en Spring Security mediante el protocolo de __basic authentication__.
+En el presente capítulo, aprenderemos sobre cómo se establecen estas configuraciones y la metodología básica de trabajo en Spring Security tomando como ejemplo el protocolo de __basic authentication__.
 
 ## 1. Protocolo de Autenticación
 
@@ -32,10 +32,27 @@ Como se aprecia en la Figura 2, el proceso inicia con el _request_ de un usuario
 
 Para lograr el proceso de autenticación descrito en la Figura 2, Spring Security requiere que el cliente envíe las credenciales del usuario (username/password) a través del `Authorization` header. En el valor del header, el cliente debe añadir el valor `Basic`, seguido del usuario y contraseña, codificados con `Base64` y separados por `:`. 
 
-
 ### 1.1. Manejo de Usuarios
 
+#### 1.2 Entendiendo `UserDetails`
 
+Spring Security trae consigo una interfaz base conocida como `UserDetails`, que consiste en lo siguiente:
+
+```java
+public interface UserDetails extends Serializable {
+  String getUsername();                                        ①
+  String getPassword();
+  Collection<? extends GrantedAuthority> getAuthorities();     ②
+  boolean isAccountNonExpired();                               ③
+  boolean isAccountNonLocked();
+  boolean isCredentialsNonExpired();
+  boolean isEnabled();
+}
+```
+
+1.  Contiene las credenciales del usuario.
+2.  Define los roles de nuestros usuarios.
+3.  Establece posibles configuraciones que bloquean al usuario, para evitar problemas de suplantación de identidad en el futuro.
 
 ### 1.2. Manejo de Contraseñas
 
@@ -45,6 +62,3 @@ Para lograr el proceso de autenticación descrito en la Figura 2, Spring Securit
 
 ### 2.2. Role-Based Access Control - RBAC
 
-## 3. Configuración de CORS
-
-## 4. Configuración de CSRF
