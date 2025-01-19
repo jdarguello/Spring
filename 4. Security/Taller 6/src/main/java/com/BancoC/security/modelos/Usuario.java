@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,7 +31,9 @@ public class Usuario implements UserDetails {
 
     @Column(nullable = false, unique = true)
     private String username;
+    @Column(nullable = false)
     private String password;
 
+    @Transient
     private Collection<? extends GrantedAuthority> authorities;
 }
