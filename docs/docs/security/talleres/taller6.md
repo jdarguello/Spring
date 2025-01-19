@@ -167,4 +167,16 @@ public class SecurityConfig {
 
 De esta forma, ya tenemos como persistir a nuestros usuarios en una base de datos. 
 
-__NOTA:__ es importante que las contraseñas estén codificadas con `bcrypt` al crear nuevos usuarios.
+__NOTA:__ es importante que las contraseñas estén codificadas con `bcrypt` al crear nuevos usuarios. Para ello, podemos utilizar __Apache HTTP Server utilities__, que debes descargar e instalar. Por ejemplo, si queremos que nuestro usuario tenga la contraseña `ejemplo123`, debemos correr el siguiente comando:
+
+```bash
+htpasswd -bnBC 10 "" "ejemplo123"
+```
+
+Lo que nos dará como respuesta:
+
+```bash
+$2y$10$jbdoNkiIYQ73yZP2IUocjOJsn6Ax9Uu.S6regLrexRDohDTSghtye
+```
+
+Esta última es la contraseña que debemos almacenar en la base de datos para el usuario que querramos crear.
