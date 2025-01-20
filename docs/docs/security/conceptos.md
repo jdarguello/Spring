@@ -34,9 +34,23 @@ Para lograr el proceso de autenticación descrito en la Figura 2, Spring Securit
 
 ### 1.1. Manejo de Usuarios
 
-#### 1.2 Entendiendo `UserDetails`
+Iniciaremos nuestro recorrido con el manejo de usuarios. Como se aprecia en la Figura 1, existen diferentes interfaces (contratos) que definen la arquitectura base de autenticación y se pueden apreciar en la Figura 2.
 
-Spring Security trae consigo una interfaz base conocida como `UserDetails`, que consiste en lo siguiente:
+![](../../static/img/security/conceptos/menajo-usuarios.png)
+
+Figura 2. Dependencias base para el manejo de usuarios. __Fuente:__ Spilca, L. _"Spring Security in Action"_. Second Edition. O'Reilley.
+
+A continuación, se explican cada uno de estos contratos.
+
+* __`GrantedAuthority`:__ hace referencia a los roles adoptados por el usuario. Cada uno de ellos puede tener múltiples _permisos_ que definen la forma en cómo interactúa un usuario con la aplicación y qué acciones puede ejecutar. Se explica en detalle en el __capítulo 2__.
+* __`UserDetails`:__ define el modelo base de usuarios.
+* __`UserDetailsService`:__ especifica la forma en cómo se carga la información de un usuario.
+* __`UserDetailsManager`:__ especifica las operaciones de adición, modificación o eliminación de un usuario.
+
+
+#### 1.1.1 Entendiendo `UserDetails`
+
+Esta interfaz consiste en lo siguiente:
 
 ```java
 public interface UserDetails extends Serializable {
@@ -52,7 +66,15 @@ public interface UserDetails extends Serializable {
 
 1.  Contiene las credenciales del usuario.
 2.  Define los roles de nuestros usuarios.
-3.  Establece posibles configuraciones que bloquean al usuario, para evitar problemas de suplantación de identidad en el futuro.
+3.  Establece posibles configuraciones que restringen o bloquean al usuario, para evitar problemas de suplantación de identidad en el futuro. Son argumentos opcionales y dependen de la lógica de negocio que se requiere implementar. Si alguno de ellos retorna `false`, el usuario no podrá interactuar con la aplicación y responderá con HTTP 401.
+
+#### 1.1.2. ¿Cómo funciona el `UserDetailsService`?
+
+
+
+#### 1.1.3. Entendiendo `UserDetailsManager`
+
+
 
 ### 1.2. Manejo de Contraseñas
 
