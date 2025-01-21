@@ -140,7 +140,7 @@ Los primeros tres parámetros corresponden al valor de la llave usada para codif
 * PBKDF2WithHmacSHA256
 * PBKDF2WithHmacSHA512
 
-Entre mayor sea el hash generado, más segura será la contraseña encriptada pero menor será el _performance_ de la autenticación. De forma similar, en la Figura 4 se pueden apreciar los argumentos usados para el _scrypt hashing_.
+Entre mayor sea el hash generado, más segura será la contraseña codificada, pero menor será el _performance_ de la autenticación. De forma similar, en la Figura 4 se pueden apreciar los argumentos usados para el _scrypt hashing_.
 
 ![](../../static/img/security/conceptos/scrypt.png)
 
@@ -149,6 +149,32 @@ Figura 4. Argumentos para implementar el _scrypt hashing_. __Fuente:__ Spilca, L
 #### 1.2.2 Uso de Spring Security Crypto Module - SSCM
 
 El módulo crypto (SSCM) es la parte de Spring Security que se encarga de toda acción relevante a criptografía, entre ellas: funciones de encriptamiento, decriptamiento y generación de llaves. 
+
+En primer lugar, es importante entender que existen dos contratos para la generación de llaves: `StringKeyGenerator` y el `BytesKeyGenerator`.
+
+```java
+public interface StringKeyGenerator {
+
+    String generateKey();
+
+}
+```
+
+Los dos cuentan con el método `generateKey()`, que genera una llave de 8 bytes para encriptar o desencriptar un texto.
+
+De igual forma, existen dos encriptadores en SSCM: `TextEncryptor` y el `BytesEncryptor`. Si bien funcionan de manera similar, las llaves que procesan son diferentes; de forma que el `TextEncryptor` sólo puede procesar llaves de tipo `String`, generadas con el `StringKeyGenerator`. Mientras que el `BytesEncryptor` puede procesar `bytes[]` o `String`.
+
+```java
+public interface TextEncryptor {
+
+  String encrypt(String text);
+  String decrypt(String encryptedText);
+
+}
+```
+
+Los dos encriptadores cuentan con métodos para encriptar (`encrypt`) y desencriptar (`decrypt`) la información. Se puede emplear como estrategia adicional de seguridad para encriptación _simétrica_ o _asimétrica_ de contraseñas o información del usuario en general.
+
 
 ## 2. Protocolo de Autorización
 
