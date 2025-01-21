@@ -38,7 +38,7 @@ Iniciaremos nuestro recorrido con el manejo de usuarios. Como se aprecia en la F
 
 ![](../../static/img/security/conceptos/menajo-usuarios.png)
 
-Figura 2. Dependencias base para el manejo de usuarios. __Fuente:__ Spilca, L. _"Spring Security in Action"_. Second Edition. O'Reilley.
+Figura 3. Dependencias base para el manejo de usuarios. __Fuente:__ Spilca, L. _"Spring Security in Action"_. Second Edition. O'Reilley.
 
 A continuación, se explican cada uno de estos contratos.
 
@@ -70,13 +70,36 @@ public interface UserDetails extends Serializable {
 
 #### 1.1.2. ¿Cómo funciona el `UserDetailsService`?
 
+Este contrato únicamente informa la manera de cargar la información de un usuario mediante `username`, como se aprecia a continuación. 
 
+```java
+public interface UserDetailsService {
+  public UserDetails loadUserByUsername(String username) 
+    throws UsernameNotFoundException;
+}
+```
 
-#### 1.1.3. Entendiendo `UserDetailsManager`
+Se puede implementar en un servicio para especificar la lógica de carga del usuario, que puede variar si proviene de una base de datos relacional, NoSQL, caché o un microservicio externo.
 
+#### 1.1.3. Implementando `UserDetailsManager`
 
+Como se aprecia en la Figura 3, este contrato __extiende__ las funcionalidades definidas por el `UserDetailsService`. Permite especificar la forma en cómo se crean, actualizan o eliminan usuarios, entre otras funcionalidades. 
+
+```java
+public interface UserDetailsManager extends UserDetailsService {
+  void createUser(UserDetails user);
+  void updateUser(UserDetails user);
+  void deleteUser(String username);
+  void changePassword(String oldPassword, String newPassword);
+  boolean userExists(String username);
+}
+```
+
+Este contrato se puede implementar en otro servicio customizado que especifique las funcionalidades de estos métodos para garantizar la persistencia de los datos.
 
 ### 1.2. Manejo de Contraseñas
+
+El manejo de contraseñas es una parte esencial dentro del flujo de autenticación. En la presente sección, hablaremos del contrato de `PasswordEncoder` y las herramientas ofrecidas en el módulo de Spring Security Crypto (SSCM). 
 
 ## 2. Protocolo de Autorización
 
