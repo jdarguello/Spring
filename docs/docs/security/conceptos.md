@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Conceptos básicos
+# Autenticación
 
 En su forma más elemental, Spring Security funciona como un filtro. El microservicio recibe las credenciales de un usuario, valida si son correctas, ya sea contra en una base de datos, un caché o contra un servicio de autenticación externo. Luego, revisa si el usuario tiene los permisos para realizar la acción que solicita y, de tenerlos, permite continuar con el flujo lógico de negocio. Si no los tiene, o las credenciales (usuario/contraseña) no son válidas, deniega el acceso. Lo anterior, se puede apreciar de forma gráfica en la Figura 1.
 
@@ -32,9 +32,9 @@ Como se aprecia en la Figura 2, el proceso inicia con el _request_ de un usuario
 
 Para lograr el proceso de autenticación descrito en la Figura 2, Spring Security requiere que el cliente envíe las credenciales del usuario (username/password) a través del `Authorization` header. En el valor del header, el cliente debe añadir el valor `Basic`, seguido del usuario y contraseña, codificados con `Base64` y separados por `:`. 
 
-### 1.1. Manejo de Usuarios
+## 2. Manejo de Usuarios
 
-Iniciaremos nuestro recorrido con el manejo de usuarios. Como se aprecia en la Figura 1, existen diferentes interfaces (contratos) que definen la arquitectura base de autenticación y se pueden apreciar en la Figura 2.
+Iniciaremos nuestro recorrido con el manejo de usuarios. Como se aprecia en la Figura 2, existen diferentes interfaces (contratos) que definen la arquitectura base de autenticación y se pueden apreciar en la Figura 3.
 
 ![](../../static/img/security/conceptos/menajo-usuarios.png)
 
@@ -48,7 +48,7 @@ A continuación, se explican cada uno de estos contratos.
 * __`UserDetailsManager`:__ especifica las operaciones de adición, modificación o eliminación de un usuario.
 
 
-#### 1.1.1 Entendiendo `UserDetails`
+### 2.1 Entendiendo `UserDetails`
 
 Esta interfaz consiste en lo siguiente:
 
@@ -68,7 +68,7 @@ public interface UserDetails extends Serializable {
 2.  Define los roles de nuestros usuarios.
 3.  Establece posibles configuraciones que restringen o bloquean al usuario, para evitar problemas de suplantación de identidad en el futuro. Son argumentos opcionales y dependen de la lógica de negocio que se requiere implementar. Si alguno de ellos retorna `false`, el usuario no podrá interactuar con la aplicación y responderá con HTTP 401.
 
-#### 1.1.2. ¿Cómo funciona el `UserDetailsService`?
+### 2.2. ¿Cómo funciona el `UserDetailsService`?
 
 Este contrato únicamente informa la manera de cargar la información de un usuario mediante `username`, como se aprecia a continuación. 
 
@@ -81,7 +81,7 @@ public interface UserDetailsService {
 
 Se puede implementar en un servicio para especificar la lógica de carga del usuario, que puede variar si proviene de una base de datos relacional, NoSQL, caché o un microservicio externo.
 
-#### 1.1.3. Implementando `UserDetailsManager`
+### 2.3. Implementando `UserDetailsManager`
 
 Como se aprecia en la Figura 3, este contrato __extiende__ las funcionalidades definidas por el `UserDetailsService`. Permite especificar la forma en cómo se crean, actualizan o eliminan usuarios, entre otras funcionalidades. 
 
@@ -97,11 +97,11 @@ public interface UserDetailsManager extends UserDetailsService {
 
 Este contrato se puede implementar en otro servicio customizado que especifique las funcionalidades de estos métodos para garantizar la persistencia de los datos.
 
-### 1.2. Manejo de Contraseñas
+## 3. Manejo de Contraseñas
 
 El manejo de contraseñas es una parte esencial dentro del flujo de autenticación. En la presente sección, hablaremos del contrato de `PasswordEncoder` y las herramientas ofrecidas en el módulo de Spring Security Crypto (SSCM). 
 
-#### 1.2.1 Uso de `PasswordEncoder`
+### 3.1 Uso de `PasswordEncoder`
 
 De la misma forma en como observarmos en la sección 1.1., también es posible customizar la forma en cómo se codifica o encripta una contraseña. Paso fundamental, ya que, bajo ninguna circunstancia, se debe almacenar una contraseña en texto plano. Empezaremos por entender las bases del contrato:
 
@@ -146,7 +146,7 @@ Entre mayor sea el hash generado, más segura será la contraseña codificada, p
 
 Figura 4. Argumentos para implementar el _scrypt hashing_. __Fuente:__ Spilca, L. _"Spring Security in Action"_. Second Edition. O'Reilley.
 
-#### 1.2.2 Uso de Spring Security Crypto Module - SSCM
+### 3.2 Uso de Spring Security Crypto Module - SSCM
 
 El módulo crypto (SSCM) es la parte de Spring Security que se encarga de toda acción relevante a criptografía, entre ellas: funciones de encriptamiento, decriptamiento y generación de llaves. 
 
@@ -174,11 +174,3 @@ public interface TextEncryptor {
 ```
 
 Los dos encriptadores cuentan con métodos para encriptar (`encrypt`) y desencriptar (`decrypt`) la información. Se puede emplear como estrategia adicional de seguridad para encriptación _simétrica_ o _asimétrica_ de contraseñas o información del usuario en general.
-
-
-## 2. Protocolo de Autorización
-
-### 2.1. Permisos
-
-### 2.2. Role-Based Access Control - RBAC
-
