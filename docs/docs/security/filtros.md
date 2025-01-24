@@ -21,7 +21,7 @@ Los filtros en la arquitectura de Spring Security son típocos filtros HTTP. Pod
 * `ServletResponse`: representa el _response_ HTTP. Permite alterar la respuesta de una petición antes de reenviarla al cliente.
 * `FilterChain`: representa la cadena de filtros. Se emplea para enviar el request y continuar el proceso definido en la cadena de filtros.
 
-La _cadena de filtros_ representa una colección de filtros representa una serie de filtros, con un orden definido, que actúan para procesar y validar las peticiones de un microservicio. Además de la interfaz `Filter`, existen otros tipos de filtros, entre ellos:
+La _cadena de filtros_ representa una colección de filtros, con un orden definido, que actúan para procesar y validar las peticiones de un microservicio. Además de la interfaz `Filter`, existen otros tipos de filtros, entre ellos:
 
 * `BasicAuthenticationFilter`: se encarga de ejecutar el proceso de autenticación básica HTTP.
 * `CsrfFilter`: se encarga de la [protección CSRF](./csrf.md).
@@ -70,7 +70,34 @@ La diferencia principal entre la adición de este filtro a la cadena con la secc
 
 Se emplea en escenarios donde se desea realizar una implementación diferente a otra ya existente. Por ejemplo, cuando se desea cambiar el protocolo de autenticación básica predefinida en Spring Security por otra. Algunos escenarios de este tipo que se pueden encontrar en la vida real son:
 
-* Autenticación basada en un _static header_.
+* Autenticación basada en un _static keys_.
 * Uso de una llave simétrica para firmar un _request_ autenticado.
 * Uso de una contraseña única de un solo uso (_One-Time Password_ - OTP) para la validar la autenticación durante la comunicación entre microservicios.
+
+#### 2.3.1 Autenticación basada en static keys
+
+Este primer escenario consiste en que el cliente envía un _string_ en el header del request HTTP, que es siempre el mismo. La aplicación lo almacena en una base de datos o en un _secrets vault_ (AWS Secrets Manager, por ejemplo). 
+
+La autenticación basada en un static keys ofrece un seguridad débil en comparación con un protocolo de autenticación básico. Sin embargo, suele ser elegido entre arquitectos y desarrolladores en la comunicación entre microservicios en el backend por su simplicidad. Las implementaciones suelen ejecutarse de forma rápida, porque no requiere procesos complejos. De esta forma, la seguridad en el manejo de la información recae en la infraestructura de la aplicación y no el protocolo de autenticación.
+
+![](../../static/img/security/filtros/static%20keys.png)
+
+Figura 6. Autenticación con _static keys_. __Fuente:__ Spilca, L. _"Spring Security in Action"_. Second Edition. O'Reilley.
+
+#### 2.3.2 Autenticación con llave simétrica
+
+En este segundo escenario, se firma y validan los request HTTP con llaves simétricas para firmar las peticione. Tanto el cliente como el servidor conocen el valor de la llave. El cliente la usa para firmar parte del request (por ejemplo, el header de autorización) y el servidor valida si la firma fue con la misma llave. Este último puede almacenar llaves individuales de clientes en una base de datos o en un _secrets vault_.
+
+![](../../static/img/security/filtros/llave-simetrica.png)
+
+Figura 7. Firma con llave simétrica. __Fuente:__ Spilca, L. _"Spring Security in Action"_. Second Edition. O'Reilley.
+
+#### 2.3.3 Autenticación con OTP
+
+En el proceso de autenticación OTP (_"One-Time Password"_), el usuario recibe una contraseña vía mensaje de texto o mediante un proveedor de autenticación (como Google Authenticator, por ejemplo) y la utiliza para certificar los requests, como se aprecia en la Figura 8.
+
+![](../../static/img/security/filtros/OTP.png)
+
+Figura 8. Autenticación OTP. __Fuente:__ Spilca, L. _"Spring Security in Action"_. Second Edition. O'Reilley.
+
 
