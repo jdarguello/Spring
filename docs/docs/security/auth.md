@@ -174,3 +174,99 @@ public interface TextEncryptor {
 ```
 
 Los dos encriptadores cuentan con métodos para encriptar (`encrypt`) y desencriptar (`decrypt`) la información. Se puede emplear como estrategia adicional de seguridad para encriptación _simétrica_ o _asimétrica_ de contraseñas o información del usuario en general.
+
+## 4. Implementaciones de Autenticación
+
+Como se aprecia en la Figura 2, la lógica de autenticación se implementa en el `AuhtenticationProvider`, que es donde se encuentran las condiciones e instrucciones que deciden si se autentica un request. La entidad que delega esta responsabilidad al `AuthenticationProvider` es el `AuthenticationManager`, el cual recibe el request desde la capa de cadena de filtros HTTP (vistos en el capítulo de [Filtros de seguridad](./filtros.md)). El proceso de autenticación tiene sólo dos posibles resultadods:
+
+1. _La entidad que hace el request no está autenticada_, en cuyo caso quiere decir que no se reconoce alusuario y que la aplicación rechaza el request sin delegar al proceso de autorización. Respondiendo con un HTTP 401 (Unauthorized).
+2. _La entidad que hace el request está autenticada_. Los detalles de dicha entidad son almacenados dentro de la aplicación (en el `SecurityContext`) y pueden ser empleados para procesos de autorización. 
+
+### 4.1. Entendiendo el `AuthenticationProvider`
+
+En aplicaciones empresariales, es común encontrarnos en situaciones donde la implementación por default de Spring Security (mediante `username` y `password`) no aplica. Incluso, puede ser común encontrar muchas situaciones donde se necesiten aplicar múltiples protocolos de autenticación. Por ejemplo, se podría requerir aplicar un protocolo de autenticación multi-factor (MFA, por sus siglas en inglés) en donde el usuario reciba un mensaje de texto con un código de seguridad. O se podría requerir, por ejemplo, implementar autenticación biométrica con huella dactilar o reconocimiento facial, como se muestra en la Figura 4.
+
+![](../../static/img/security/conceptos/multi-auth.png)
+
+Figura 4. Ejemplos de protocolos de autenticación. __Fuente:__ Spilca, L. _"Spring Security in Action"_. Second Edition. O'Reilley.
+
+Spring Security provee una serie de implementaciones que son útiles para muchos escenarios, pero no para todos. Debido a ello, este framework provee el contrato de `AuthenticationProvider` que permite la customización de cualquier lógica de autenticación. 
+
+#### 4.1.1 Representación del request durante la autenticación
+
+Para entender en detalle cómo se establece una lógica de autenticación, debemos entender, primero, cómo describir el _evento de autenticación_. 
+
+`Authentication` es uno de los contratos principales involucrados en el el proceso de autenticación. Esta interfaz representa el evento de autenticación y contiene los detalles de la entidad que solicita acceder a la aplicación. Esta información es posible accederla durante y después del proceso de autenticación. 
+
+El usuario que hace la petición de acceso a una aplicación se conoce como `Principal`, de la cual se basa el contrato de `Authentication`, como se muestra a continuación. 
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+  <TabItem value="imagen-auth" label="Esquema de Authentication" default>
+  ![](../../static/img/security/conceptos/authentication.png)
+
+  Figura 5. Relación entre `Principal` y `Authentication`. __Fuente:__ Spilca, L. _"Spring Security in Action"_. Second Edition. O'Reilley.
+  </TabItem>
+  <TabItem value="interfaz-auth" label="Interfaz de Authentication">
+```java
+public interface Authentication extends Principal, Serializable {
+
+  Collection<? extends GrantedAuthority> getAuthorities();
+  Object getCredentials();
+  Object getDetails();
+  Object getPrincipal();
+  boolean isAuthenticated();
+  void setAuthenticated(boolean isAuthenticated) 
+     throws IllegalArgumentException;
+}
+```
+  </TabItem>
+</Tabs>
+
+* `isAuthenticated()` retorna `true` si finalizó el proceso de autenticación o `false` si el protocolo sigue en proceso.
+* `getCredentials()` retorna la contraseña o cualquier secreto usado en el proceso de autenticación.
+* `getAuthorities()` retorna la colección de roles vinculados al request de autenticación.
+
+#### 4.1.2 Implementación de lógica de autenticación
+
+Ahora que ya hemos entendido la forma en como Spring Security representa un proceso de autenticación, podemos entender la forma de definir la lógica de autenticación con `AuthenticationProvider`. Por default, el `AuthenticationProvider` delega la responsabilidad de encontrar a un usuario al `UserDetailsService` (como se explicó en  la sección 2.2). A su vez, emplea el `PasswordEncoder` (explicado en la sección 3.1) para el manejo de contraseñas durante el proceso de autenticación. A continuación, se exponen los métodos de este contrato.
+
+```java
+public interface AuthenticationProvider {
+
+  Authentication authenticate(Authentication authentication) 
+    throws AuthenticationException;
+
+  boolean supports(Class<?> authentication);
+}
+```
+
+Como se aprecia, el método de `authenticate()` recibe un objeto de tipo `Authentication`. Este método es donde se define la lógica de autenticación. El segundo método, `support()`, se emplea para verificar que la clase de autenticación sea soportada por el protocolo de autenticación. Es decir, permite al `AuthenticationManager` decidir a qué `AuthenticationProvider` utilizar, llegado el caso de habilitar múltiples tipos de autenticación, como se aprecia en la Figura 6.
+
+![](../../static/img/security/conceptos/multi-providers.png)
+
+Figura 6. Relación entre `AuthenticationManager` y `AuthenticationProvider`. __Fuente:__ Spilca, L. _"Spring Security in Action"_. Second Edition. O'Reilley.
+
+### 4.2. Uso del `SecurityContext`
+
+Es común encontrar situaciones donde necesitamos usar la información del usuario autenticado, por ejemplo: el `username` o los roles asociados a este. Una vez que el `AuthenticationManager` completa el proceso de autenticación exitosamente, almacena la instancia del `Authentication` en memoria por el resto del request. El elemento en donde se almacena esta información es en el `SecurityContext`.
+
+```java
+public interface SecurityContext extends Serializable {
+
+  Authentication getAuthentication();
+  void setAuthentication(Authentication authentication);
+}
+```
+
+Como se observa, el primer método es el encargado de retornar la información del usuario autenticado. Sin embargo, ¿cómo se maneja el `SecurityContext`? Spring Security ofrece tres estrategias (modos) para manejar el `SecurityContext` con un objeto de rol _manager_. Se conoce como: `SecurityContextHolder`:
+
+* `MODE_THREADLOCAL`: permite a cada _thread_ almacenar sus propios detalles en el security context. En una aplicación de tipo _thread-per-request_, este enfoque permie a cada request tener un thread individual.
+* `MODE_INHERITABLETHREADLOCAL`: similar al `MODE_THREADLOCAL`. Además, instruye a Spring Security a copiar el security context para el siguiente thread en caso de que se ejecute un método asíncrono. De esta forma, el thread que corra en el método con `@Async` hereda el security context. La anotación `@Async` es usada en métodos para instruir a Spring de llamar el méotdo anotado en un thread por separado.
+* `MODE_GLOBAL`: hace que todos los threads de la aplicación accedan al mismo security context.
+
+
+
+
