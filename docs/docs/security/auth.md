@@ -267,6 +267,57 @@ Como se observa, el primer método es el encargado de retornar la información d
 * `MODE_INHERITABLETHREADLOCAL`: similar al `MODE_THREADLOCAL`. Además, instruye a Spring Security a copiar el security context para el siguiente thread en caso de que se ejecute un método asíncrono. De esta forma, el thread que corra en el método con `@Async` hereda el security context. La anotación `@Async` es usada en métodos para instruir a Spring de llamar el méotdo anotado en un thread por separado.
 * `MODE_GLOBAL`: hace que todos los threads de la aplicación accedan al mismo security context.
 
+#### 4.2.1 Estrategia de tenencia del security context
 
+La primera estrategia de manejo del security context (`MODE_THREADLOCAL`) emplea la implementación base del JDK: `ThreadLocal` que funciona como una colección de datos, pero asegurándose que cada _thread_ de la aplicación sólo pueda ver los datos almacenados en su parte de la colección. De esta forma, cada request sólo puede acceder a su parte del security context, denegando el acceso a la información de los otros `ThreadLocal`, como se muestra en la Figura 7.
 
+![](../../static/img/security/conceptos/threads.png)
 
+Figura 7. Manejo del security context con el `MODE_THREADLOCAL`. __Fuente:__ Spilca, L. _"Spring Security in Action"_. Second Edition. O'Reilley.
+
+De la Figura 7, cada _request_ (A, B y C) tiene su propio _thread_ (T1, T2 y T3), de forma que cada petición sólo puede ver los detalles almacenados en su `SecurityContext`. Sin embargo, esto también significa que si un nuevo thread es creado de forma asíncrona, el nuevo thread tendrá su propio security context. Los detalles del thread padre no son copiados en el security context del nuevo thread. Esta es la estrategia por default que maneja Spring Security.
+
+Su implementación se hace en la capa de controladores de la siguiente forma:
+
+```java
+@GetMapping("/hello")
+public String hello() {
+  SecurityContext context = SecurityContextHolder.getContext();
+  Authentication a = context.getAuthentication();
+
+  return "Hello, " + a.getName() + "!";
+}
+```
+
+También, es posible obtener la información del usuario a nivel de endpoint. Spring puede inyectarlo directamente como parámetro de los métodos, sin necesidad de referirnos al `SecurityContextHolder`, como se muestra a continuación.
+
+```java
+@GetMapping("/hello")
+public String hello(Authentication a) {        ①
+  return "Hello, " + a.getName() + "!";
+}
+```
+
+#### 4.2.2 Estrategia de tenencia para comunicación asíncrona
+
+Si bien la estrategia expuesta en la sección 4.2.1 suele ser suficiente para las necesidades del manejo de la información de un usuario, hay situaciones donde este no funcionaría de forma adecuada; como cuando necesitamos manejar múliples _threads_ por request, como en casos con concurrencia. Por ejemplo:
+
+```java
+@GetMapping("/bye")
+@Async                 
+public void goodbye() {
+  SecurityContext context = SecurityContextHolder.getContext();
+  String username = context.getAuthentication().getName();    //NullPointerException
+}
+```
+
+Para habilitar la funcionalidad de la anotación `@Async`, debemos crear una clase configuración y anotarla con `@EnableAsync`.
+
+```java
+@Configuration
+@EnableAsync
+public class ProjectConfig {
+}
+```
+
+Para solucionar el problema de `NullPointerException`, debemos habilitar la estrategia `MODE_INHERITABLETHREADLOCAL`. Esto se puede hacer con el `SecurityContextHolder.setStrategyName()`o con la propiedad `spring.security.strategy` en el `application.properties`.
