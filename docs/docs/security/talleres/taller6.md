@@ -79,7 +79,7 @@ public class SecurityConfig {
 
 * __`@Configuration`:__ especifica que se trata de una clase de configuración.
 * __`@Bean`:__ crea un nuevo bean que puede ser inyectado en otras capas o secciones del microservicio.
-* __`UserDetailsService`:__ como se explicó en el capítulo de [Conceptos Básicos](../conceptos.md) (sección 1.), este bean de Spring Security es el que define las credenciales del usuario. Con esta configuración, estamos sobreescribiendo su funcionalidad original para definir al usuario `johana` con su contraseña `123`.
+* __`UserDetailsService`:__ como se explicó en el capítulo de [Conceptos Básicos](../auth.md) (sección 1.), este bean de Spring Security es el que define las credenciales del usuario. Con esta configuración, estamos sobreescribiendo su funcionalidad original para definir al usuario `johana` con su contraseña `123`.
 * __`PasswordEncoder`:__ de igual forma, también se explicó en el capítulo de _"Conceptos Básicos"_ que este bean es el que codifica y/o encripta las contraseñas. Con esta configuración, estamos redefiniendo su lógica para que emplee el codificador bcrypt.
 
 Al establecer esta configuración, podremos acceder a las APIs con las siguientes credenciales:
