@@ -24,8 +24,8 @@ Los filtros en la arquitectura de Spring Security son típocos filtros HTTP. Pod
 La _cadena de filtros_ representa una colección de filtros, con un orden definido, que actúan para procesar y validar las peticiones de un microservicio. Además de la interfaz `Filter`, existen otros tipos de filtros, entre ellos:
 
 * `BasicAuthenticationFilter`: se encarga de ejecutar el proceso de autenticación básica HTTP.
-* `CsrfFilter`: se encarga de la [protección CSRF](./csrf.md).
-* `CorsFilter`: procesa la [autorización por CORS](./cors.md).
+* `CsrfFilter`: se encarga de la protección CSRF.
+* `CorsFilter`: procesa la autorización por CORS.
 
 ## 2. Adición de filtros en la cadena
 
