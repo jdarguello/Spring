@@ -243,3 +243,16 @@ Se pueden emplear expresiones regulares (_regex_, por sus siglas en inglés) par
 
 ## 3. Implementación de autorizaciones al nivel de métodos
 
+Spring Security, además de proveer funcionalidades de seguridad para endpoints HTTP, también permite emplear configuraciones de autorización a nivel de métodos de cualquier tipo y en diferentes capas (controladores, servicios o repositorios). 
+
+Por default, la seguridad en métodos está inhabilitada; un primer paso que se debe hacer, en caso de requerirlo, es habilitarla. Existen múltiples formas de implementar la autorización en métodos y se pueden subdividir en dos métodos globales de seguridad.
+
+* _Llamada de autorización_: decide si un usuario puede llamar a un método acorde a las reglas de privilegio (_preauthorization_) o si un usuario puede acceder a la respuesta de un método después de ser ejecutado (_postauthorization_).
+* _Filtrado_: decide qué puede recibir un método a través de parámetros (_prefiltering_) y qué debe recibir la entidad como respuesta al ejecutar el método (_postfiltering_). 
+
+### 3.1. Call authorization
+
+El enfoque de _llamada de autorización_ se refiere a aplicar reglas de autorización que decidan si un método puede ser llaamdo o permitir la llamada del método y decidir si la entidad/usuario puede acceder al valor retornado por el método. 
+
+
+
