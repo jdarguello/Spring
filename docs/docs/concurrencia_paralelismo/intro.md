@@ -14,7 +14,7 @@ Figura 1. Concepto de latencia. __Fuente:__ [kinsta.com](https://kinsta.com/blog
 
 Si bien dentro de la arquitectura de la aplicación no contemplamos la definición de los servidores que usaremos (esto se define dentro de la _arquitectura de solución_), sí es importante que nuestra aplicación esté preparada por si se da este tipo de escenarios. Debido a ello, hablaremos sobre los conceptos de _programación funcional_ y _programación reactiva_, que habilitarán el procesamiento de solicitudes entre servidores de forma asíncrona.
 
-Ahora, cuando hablamos de eficiencia en desarrollo de software, nos referimos a la optimización de los recursos computacionales de los servidores en donde se alojan nuestras aplicaciones. Esto se logra distribuyendo de forma efectiva la carga de trabajo del servidor en los CPUs disponibles, de forma paralela, a través de _threads_, como se muestra en la Figura 2.
+Ahora, cuando hablamos de eficiencia en desarrollo de software, nos referimos a la optimización de los recursos computacionales de los servidores en donde se alojan nuestras aplicaciones. Esto se logra distribuyendo de forma efectiva la carga de trabajo del servidor en los CPUs disponibles, habilitando la paralelización de flujos a través de _threads_, como se muestra en la Figura 2.
 
 <img src="../../img/concurrencia_paralelismo/intro/threads.png" width="600px" />
 
