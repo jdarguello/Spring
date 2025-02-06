@@ -145,3 +145,57 @@ public static void main(String[] args) {
 ```
 
 Como se aprecia, lo primero que hacemos es filtrar los datos de las edades que sean menores de 18 años (operación intermedia). Luego, convertimos todos los datos de `Integer` a `int` (operación intermedia), con el fin de habilitar operaciones matemáticas del `IntStream`. Finalmente, calculamos el promedio con `average` (operación terminal), dándonos la misma respuesta que su contraparte declarativa. De esta forma, la programación funcional simplificó el algoritmo original y lo hizo más legible. 
+
+## 4. Concepto de `Collectors`
+
+Los colectores se tratan de operaciones terminales que permiten clasificar los resultados finales de un _stream_ en una colección, una lista o un mapa, por citar algunos ejemplos. Java tiene definida la función `collect()` en streams para realizar estas operaciones. También tiene la clase `Collectors`, que cuenta con métodos estáticos para transformar un stream. Por ejemplo, si tenemos un lista de números y queremos filtrar sólo los pares, sería:
+
+```java
+public static void main(String[] args) {
+    Collection<Integer> numeros = Arrays.asList(501, 102, 65, 70, 23, 24, 1222, 300);
+
+    List<Integer> numerosParesOrdenados = numeros.stream()
+        .filter(numero -> numero % 2 == 0)
+        .sorted()
+        .collect(Collectors.toList());          //Transforma el 'stream' en una lista
+    
+    System.out.println(numerosParesOrdenados);  //[24, 70, 102, 300, 1222]
+}
+```
+
+## 5. Métodos referenciales
+
+Se trata de una forma compacta para referirse a un método existente por su nombre. En lugar de escribir una expresión lambda que simplemente llame un método existente, se puede usar un _método por referencia_ para mejorar la claridad del algoritmo. Por ejemplo, en lugar de escribir algo como:
+
+```java
+list.forEach(item -> System.out.println(item));
+```
+
+Se puede escribir de la siguiente forma:
+
+```java
+list.forEach(System.out::println);
+```
+
+Lo anterior le espicifica al compilador usar el método `println()` de `System.out` para cada uno de los elementos en la lista.
+
+## 6. Streams paralelos
+
+Se trata de una funcionalidad propia de Java para procesar colecciones de datos en paralelo, habilitando múltiples _threads_ para el procesamiento y transformación de datos. Puede llevar a mejoras en el performance de una aplicación que requiera procesar grandes cantidades de datos o que empleen operaciones que consuman una gran cantidad de recursos computacionales al emplear arquitecturas multi-core de una forma más efectiva.
+
+En Java existen dos tipos de _streams_:
+
+* __Stream secuencial:__ procesa los elementos, uno de otras de otro, en un mismo thread. Se abarcó en los capítulos anteriores.
+* __Stream paralelo:__ divide el stream en múltiples baches y los procesa, de forma concurrente, en diferentes threads.
+
+El uso de streams paralelos es relativamente sencillo de implementar y, muchas veces, sólo requiere especificar la función `parallel()` en un stream. Por ejemplo:
+
+```java
+List<Integer> numeros = Arrays.asList(1, 2, 3, 4, 5, 6);
+
+numeros.stream()
+        .parallel()
+        .forEach(System.out::println);
+```
+
+A pesar de la simplicidad, no siempre es benéfico emplear streams paralelos en un flujo de trabajo. Se recomienda emplearlo en colecciones de datos de gran tamaño que requieran procesamientos sencillos, donde el orden de procesamiento no sea un factor importante.

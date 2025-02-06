@@ -5,19 +5,23 @@ package org.example;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.OptionalDouble;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 
 public class App {
 
     public static void main(String[] args) {
-        Collection<Integer> edadesConsumidores = Arrays.asList(10,20,12,22,40,25,16,32);
+        Collection<Integer> numeros = Arrays.asList(501, 102, 65, 70, 23, 24, 1222, 300);
 
-        OptionalDouble promedioEdades = edadesConsumidores.stream()
-            .filter(edad -> edad > 18)
-            .mapToInt(Integer::intValue)
-            .average();
+        List<Integer> numerosParesOrdenados = numeros.stream()
+            .parallel()
+            .filter(numero -> numero % 2 == 0)
+            .sorted()
+            .collect(Collectors.toList());
         
-        System.out.println(Math.round(promedioEdades.getAsDouble()));
+        System.out.println(numerosParesOrdenados);
     }
 }
