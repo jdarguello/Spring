@@ -1,0 +1,48 @@
+server:
+    port: 8080                                    
+    shutdown: graceful                         
+    netty:
+        connection-timeout: 2s                    
+        idle-timeout: 15s                    
+ 
+spring:
+    application:
+        name: carrito-compras
+    lifecycle:
+        timeout-per-shutdown-phase: 15s
+    flyway: 
+        user: ${spring.r2dbc.username}                         
+        password: ${spring.r2dbc.password}                     
+---
+
+spring:
+    config:
+        activate: 
+            on-profile: dev
+    r2dbc: 
+        username: usuario                                    
+        password: ejemplo123                                 
+        url: r2dbc:postgresql://localhost:5432/taller9       
+        pool: 
+            max-create-connection-time: 2s                       
+            initial-size: 5                                      
+            max-size: 10
+    flyway:
+        url: jdbc:postgresql://localhost:5432/taller9 
+
+---
+
+spring:
+    config:
+        activate: 
+            on-profile: test
+    r2dbc: 
+        username: usuario                                    
+        password: ejemplo123                                 
+        url: r2dbc:postgresql://localhost:5432/taller9-test  
+        pool: 
+            max-create-connection-time: 2s                       
+            initial-size: 5                                      
+            max-size: 10
+    flyway:
+        url: jdbc:postgresql://localhost:5432/taller9-test 

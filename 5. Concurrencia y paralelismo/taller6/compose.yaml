@@ -1,0 +1,9 @@
+services:
+  carrito-db:
+    image: 'postgres:15'
+    environment:
+      - 'POSTGRES_DB=taller9'
+      - 'POSTGRES_PASSWORD=ejemplo123'
+      - 'POSTGRES_USER=usuario'
+    ports:
+      - '5432'

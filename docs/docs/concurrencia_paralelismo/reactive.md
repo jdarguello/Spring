@@ -41,3 +41,17 @@ Además, también cuenta con operadores propios que incrementan la resiliencia d
 
 Cuando se construye una aplicación en Spring Boot, es posible elegir entre un _servlet stack_ y un _reactive stack_. El primero se basa en opearciones síncronas y bloqueantes que emplea en un modelo de tipo "thread-per-request". Por otro lado, el _reactive stack_ se basa en operaciones asíncronas y no-bloqueantes que emplea un modelo de tipo "event-loop" (ver Figura 1) para el manejo de las peticiones.
 
+El _servlet stack_ está basado en el Servlet API y un _servlet container_, como Apache Tomcat. Por su lado, el _reactive stack_ utiliza el modelo reactivo basado en el Reactive Strams API (implementado por el Proyecto Reactor) y Netty como servlet container. Cualquiera de estos dos stacks permite la construcción de aplicación REST usando cualquier clase de anotaciones del tipo `@RestController`.  El servlet stack emplea Spring MVC, mientras que el stack reactivo utiliza __Spring WebFlux__. En la Figura 2, se puede apreciar la comparación entre ambos.
+
+<img src="../../img/concurrencia_paralelismo/reactive/comparativa.png" width="650px" />
+
+Figura 2. Comparación entre el _servlet stack_ y el _reactive stack_.  __Fuente:__ Vitale, T. _"Cloud Native Spring in Action"_. Manning.
+
+Todos los frameworks dentro del ecosistema de Spring ofrecen las opciones reactivas y no-reactivas, incluyendo: Spring Security, Spring Data y Spring Cloud. 
+
+## 2. Servers reactivos con Spring WebFlux y Spring Data R2DBC
+
+Hasta este momento, hemos trabajado de forma imperativa con Spring MVC y Spring Data JPA. En esta sección, veremos las generalidades de trabajar con Spring WebFlux y Spring Data R2DBC. Veremos que los patrones y principios que hemos aplicado hasta el momento los seguiremos usando en aplicaciones reactivas. La principal diferencia será que cambiaremos la implementación de la lógica de negocio de forma imperativa al uso de streams reactivos procesados de forma asíncrona. En el [Taller 9](./talleres/taller_9.md),podremos observar un ejemplo de cómo se realiza este cambio de paradigma.
+
+
+
