@@ -6,13 +6,15 @@ server:
         idle-timeout: 15s                    
  
 spring:
+    profiles:
+        active: dev
     application:
         name: carrito-compras
     lifecycle:
         timeout-per-shutdown-phase: 15s
     flyway: 
         user: ${spring.r2dbc.username}                         
-        password: ${spring.r2dbc.password}                     
+        password: ${spring.r2dbc.password}                 
 ---
 
 spring:

@@ -1,47 +1,54 @@
 package com.BancoC.taller6.unit.modelos;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-
-import com.BancoC.taller6.repositories.ProductoRepository;
 
 import modelos.Producto;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 public class ProductoTest extends ModelosTest {
 
-    
-    @Autowired
-    private ProductoRepository repository;
-
     @Test
-    public void pruebaConexion() {
-        assertTrue(postgres.isCreated());
-        assertTrue(postgres.isRunning());
+    void createProducto() {
+        assertEquals(camisaGuardada, camisa);
     }
 
     @Test
-    public void createAndGetProductos() {
-        Mono<Producto> guardarUnProducto = repository.save(camisa);
+    void getProductos() {
+        Producto pantalonComprado = repository.save(pantalon).block();
 
-        StepVerifier.create(guardarUnProducto)
-            .expectNextCount(1)
+        StepVerifier
+            .create(repository.findAll())
+            .expectNextMatches(
+                prenda -> this.comparacionProducto(prenda, camisaGuardada)
+            )
+            .expectNextMatches(
+                prenda -> this.comparacionProducto(prenda, pantalonComprado)
+            )
             .verifyComplete();
-        System.out.println(guardarUnProducto);
-        
+    }
 
-        /* 
-        StepVerifier.create(secuencia)
-            .consumeNextWith(producto -> {
-                System.out.println("Retrieved Producto: " + producto);
-            })
-            .expectNextMatches(producto -> false) // Should now fail
-            .verifyComplete();*/
+    @Test
+    void updateProducto() {
+        camisaGuardada.setInventario(0);
+        camisaGuardada.setPrecio(2_000_000.0);
+
+        repository.save(camisaGuardada)
+            .then(repository.findById(camisaGuardada.getProductoId()))
+            .as(StepVerifier::create)
+            .expectNextMatches(
+                prenda -> prenda.getPrecio().equals(2_000_000.0)
+                            && prenda.getInventario() == 0
+            )
+            .verifyComplete();
+    }
+
+    private Boolean comparacionProducto(Producto referencia, Producto producto) {
+        return referencia.getProductoId() == producto.getProductoId()
+            && referencia.getInventario() == producto.getInventario()
+            && referencia.getNombre().equals(producto.getNombre())
+            && referencia.getPrecio().equals(producto.getPrecio());
     }
 
 }
